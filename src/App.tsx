@@ -7,6 +7,7 @@ import { NotificationProvider } from "./context/notification/NotificationContext
 import Login from "./pages/Login";
 import PublicRoute from "./components/PublicRoute";
 import DashboardLayout from "./components/DashboardLayout";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
@@ -18,7 +19,7 @@ function App() {
               path="/"
               element={
                 <DashboardLayout>
-                  <div>Home</div>
+                  <Dashboard />
                 </DashboardLayout>
               }
             />
