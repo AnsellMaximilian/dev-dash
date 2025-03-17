@@ -4,6 +4,7 @@ import "./App.css";
 import { AuthProvider } from "./context/auth/AuthContextProvider";
 import Register from "./pages/Register";
 import { NotificationProvider } from "./context/notification/NotificationContextProvider";
+import Login from "./pages/Login";
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<div>Home</div>} />
-            <Route path="/login" element={<div>Login</div>} />
+            <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Routes>
         </BrowserRouter>

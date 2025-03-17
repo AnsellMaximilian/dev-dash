@@ -1,16 +1,15 @@
 import { useState } from "react";
 import { Button } from "@progress/kendo-react-buttons";
 import { TextBox } from "@progress/kendo-react-inputs";
-import { register } from "../service/auth";
+import { login } from "../service/auth";
 import logo from "../assets/logo.svg";
 import { Link } from "react-router-dom";
 import { useNotification } from "../hooks/useNotification";
 import { getCatchErrorMessage } from "../lib/utils/error";
 
-export default function Register() {
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -20,10 +19,15 @@ export default function Register() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      if (!email || !password || !name)
-        throw new Error("Email, name, or password cannot be empty!");
-      const user = await register(email, password, name);
-      notify("success", `Registered as ${user.name}`);
+      if (!email || !password)
+        throw new Error("Email or password cannot be empty!");
+      const user = await login(email, password);
+
+      if (user) {
+        notify("success", `Logged in as ${user.name}`);
+      } else {
+        notify("error", "Failed to log in.");
+      }
     } catch (error) {
       notify("error", getCatchErrorMessage(error));
     } finally {
@@ -42,16 +46,8 @@ export default function Register() {
             style={{ width: "150px" }}
           />
 
-          <h1 className="mb-2 text-center h5">Create an Account</h1>
+          <h1 className="mb-2 text-center h5">Sign in to Your Account</h1>
           <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <p>Name</p>
-              <TextBox
-                placeholder="John Smith"
-                value={name}
-                onChange={(e) => setName(e.value as string)}
-              />
-            </div>
             <div className="mb-3">
               <p>Email</p>
               <TextBox
@@ -74,12 +70,12 @@ export default function Register() {
               className="btn-primary w-100"
               disabled={isLoading}
             >
-              {isLoading ? "Registering..." : "Create Free Account"}
+              {isLoading ? "Signing in..." : "Sign in"}
             </Button>
           </form>
           <div className="mt-3 text-center">
             <p>
-              Already have an account? <Link to="/login">Login</Link>
+              Don't have an account? <Link to="/register">Register</Link>
             </p>
           </div>
         </div>
