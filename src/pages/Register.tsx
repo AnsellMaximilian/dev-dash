@@ -4,25 +4,34 @@ import { TextBox } from "@progress/kendo-react-inputs";
 import { register } from "../service/auth";
 import logo from "../assets/dev-dash-logo.svg";
 import { Link } from "react-router-dom";
+import { useNotification } from "../hooks/useNotification";
+import { getCatchErrorMessage } from "../lib/utils/error";
 
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  const notify = useNotification();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const user = await register(email, password, name);
-      console.log("User registered:", user);
+      notify("success", `Registered as ${user.name}`);
     } catch (error) {
-      console.error("Registration failed:", error);
+      notify("error", getCatchErrorMessage(error));
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100">
-      <div className="card w-50 pt-4 pb-2">
+    <main className="d-flex justify-content-center align-items-center container-fluid vh-100 w-100 bg-light">
+      <div className="card w-50 pt-4 pb-2 shadow-sm" style={{ maxWidth: 1024 }}>
         <div className="card-body">
           <img
             src={logo}
@@ -56,8 +65,12 @@ export default function Register() {
                 onChange={(e) => setPassword(e.value as string)}
               />
             </div>
-            <Button type={"submit"} className="btn-primary w-100">
-              Create Free Account
+            <Button
+              type={"submit"}
+              className="btn-primary w-100"
+              disabled={isLoading}
+            >
+              {isLoading ? "Registering..." : "Create Free Account"}
             </Button>
           </form>
           <div className="mt-3 text-center">
@@ -67,6 +80,6 @@ export default function Register() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
