@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { Button } from "@progress/kendo-react-buttons";
 import { TextBox } from "@progress/kendo-react-inputs";
-import { login } from "../service/auth";
 import logo from "../assets/logo.svg";
 import { Link } from "react-router-dom";
 import { useNotification } from "../hooks/useNotification";
 import { getCatchErrorMessage } from "../lib/utils/error";
+import { useAuth } from "../hooks/auth";
 
 export default function Login() {
+  const { loginUser } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -21,7 +22,7 @@ export default function Login() {
     try {
       if (!email || !password)
         throw new Error("Email or password cannot be empty!");
-      const user = await login(email, password);
+      const user = await loginUser(email, password);
 
       if (user) {
         notify("success", `Logged in as ${user.name}`);

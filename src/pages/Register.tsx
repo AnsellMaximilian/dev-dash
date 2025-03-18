@@ -3,7 +3,7 @@ import { Button } from "@progress/kendo-react-buttons";
 import { TextBox } from "@progress/kendo-react-inputs";
 import { register } from "../service/auth";
 import logo from "../assets/logo.svg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useNotification } from "../hooks/useNotification";
 import { getCatchErrorMessage } from "../lib/utils/error";
 
@@ -16,6 +16,8 @@ export default function Register() {
 
   const notify = useNotification();
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -24,6 +26,7 @@ export default function Register() {
         throw new Error("Email, name, or password cannot be empty!");
       const user = await register(email, password, name);
       notify("success", `Registered as ${user.name}`);
+      navigate("/login");
     } catch (error) {
       notify("error", getCatchErrorMessage(error));
     } finally {

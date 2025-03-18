@@ -3,7 +3,7 @@ import { User } from "../../types/auth";
 
 interface AuthContextType {
   user: User | null;
-  loginUser: (email: string, password: string) => Promise<void>;
+  loginUser: (email: string, password: string) => Promise<User | null>;
   registerUser: (
     email: string,
     password: string,

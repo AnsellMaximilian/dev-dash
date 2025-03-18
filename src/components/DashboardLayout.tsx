@@ -3,7 +3,6 @@ import {
   AppBar,
   AppBarSection,
   AppBarSpacer,
-  Avatar,
   Drawer,
   DrawerContent,
   DrawerSelectEvent,
@@ -13,9 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { drawerItems } from "../const/common";
 import * as svgIcons from "@progress/kendo-svg-icons";
 import logo from "../assets/logo.svg";
-
-const kendokaAvatar =
-  "https://demos.telerik.com/kendo-react-ui/assets/suite/kendoka-react.png";
+import UserAvatar from "./UserAvatar";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
@@ -57,9 +54,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         <AppBarSpacer />
 
         <AppBarSection>
-          <Avatar type="image">
-            <img src={kendokaAvatar} alt="KendoReact Layout Kendoka Avatar" />
-          </Avatar>
+          <UserAvatar />
         </AppBarSection>
       </AppBar>
 
