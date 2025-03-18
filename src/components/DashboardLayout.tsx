@@ -36,7 +36,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       <AppBar>
         <AppBarSection>
           <Button
-            svgIcon={svgIcons.layoutIcon}
+            svgIcon={svgIcons.gridLayoutIcon}
             fillMode="flat"
             onClick={handleClick}
           />
