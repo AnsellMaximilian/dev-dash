@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import PublicRoute from "./components/PublicRoute";
 import DashboardLayout from "./components/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -18,9 +19,11 @@ function App() {
             <Route
               path="/"
               element={
-                <DashboardLayout>
-                  <Dashboard />
-                </DashboardLayout>
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <Dashboard />
+                  </DashboardLayout>
+                </ProtectedRoute>
               }
             />
             <Route
