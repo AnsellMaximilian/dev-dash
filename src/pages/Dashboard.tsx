@@ -1,7 +1,7 @@
 import { Button } from "@progress/kendo-react-buttons";
 import notFoundImg from "../assets/not-found.svg";
 import { useState } from "react";
-import { Dialog, DialogActionsBar } from "@progress/kendo-react-dialogs";
+import APIKeyDialog from "../components/dashboard/APIKeyDialog";
 
 export default function Dashboard() {
   const [apiKeyDialogOpen, setApiKeyDialogOpen] = useState(false);
@@ -32,25 +32,7 @@ export default function Dashboard() {
           Submit One
         </Button>
       </div>
-
-      {apiKeyDialogOpen && (
-        <Dialog
-          title={"Please confirm"}
-          onClose={() => setApiKeyDialogOpen((prev) => !prev)}
-        >
-          <p style={{ margin: "25px", textAlign: "center" }}>
-            Are you sure you want to continue?
-          </p>
-          <DialogActionsBar>
-            <Button type="button" onClick={() => {}}>
-              No
-            </Button>
-            <Button type="button" onClick={() => {}}>
-              Yes
-            </Button>
-          </DialogActionsBar>
-        </Dialog>
-      )}
+      <APIKeyDialog setOpen={setApiKeyDialogOpen} open={apiKeyDialogOpen} />
     </div>
   );
 }
