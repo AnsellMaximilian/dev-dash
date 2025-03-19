@@ -73,7 +73,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           {drawerItems.map((item) => {
             return (
               item.selected && (
-                <div className="container-fluid py-2" id={item.text}>
+                <div
+                  className="container-fluid py-2"
+                  id={item.text}
+                  key={item.text}
+                >
                   {children}
                 </div>
               )

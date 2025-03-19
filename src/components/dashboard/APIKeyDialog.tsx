@@ -5,6 +5,7 @@ import { Button } from "@progress/kendo-react-buttons";
 import * as svgIcons from "@progress/kendo-svg-icons";
 import { Tooltip } from "@progress/kendo-react-tooltip";
 import { SvgIcon } from "@progress/kendo-react-common";
+import { useDev } from "../../hooks/dev";
 
 interface Props {
   open: boolean;
@@ -14,6 +15,14 @@ interface Props {
 export default function APIKeyDialog({ open, setOpen }: Props) {
   const [apiKey, setApiKey] = useState("");
   const [showApiKey, setShowApiKey] = useState(false);
+
+  const { submitApiKey } = useDev();
+
+  const handleSumbit = async () => {
+    await submitApiKey(apiKey);
+    setApiKey("");
+    setOpen(false);
+  };
 
   return (
     <>
@@ -60,7 +69,12 @@ export default function APIKeyDialog({ open, setOpen }: Props) {
             >
               Cancel
             </Button>
-            <Button type="submit" className="btn-primary" onClick={() => {}}>
+            <Button
+              type="submit"
+              className="btn-primary"
+              onClick={handleSumbit}
+              disabled={!apiKey}
+            >
               Submit
             </Button>
           </DialogActionsBar>
