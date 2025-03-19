@@ -52,6 +52,7 @@ export const DevProvider = ({ children }: { children: ReactNode }) => {
     const userId = user.$id;
 
     try {
+      setLoading(true);
       let existingRow: Models.Document | null = null;
 
       try {
@@ -95,6 +96,8 @@ export const DevProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error(error);
       notify("error", "Error submitting API key to Appwrite");
+    } finally {
+      setLoading(false);
     }
   };
 

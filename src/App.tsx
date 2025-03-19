@@ -49,9 +49,11 @@ function App() {
               <Route
                 path="/settings"
                 element={
-                  <PublicRoute>
-                    <Settings />
-                  </PublicRoute>
+                  <ProtectedRoute>
+                    <DashboardLayout>
+                      <Settings />
+                    </DashboardLayout>
+                  </ProtectedRoute>
                 }
               />
             </Routes>

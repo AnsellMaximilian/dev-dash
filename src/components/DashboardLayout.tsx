@@ -68,8 +68,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           selected: index === selected,
         }))}
         onSelect={onSelect}
+        className="flex-grow-1"
       >
-        <DrawerContent>
+        <DrawerContent className="d-flex flex-column">
           {drawerItems.map((item) => {
             return (
               item.selected && (
