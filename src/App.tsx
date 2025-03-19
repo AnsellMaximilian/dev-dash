@@ -10,6 +10,7 @@ import DashboardLayout from "./components/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { DevProvider } from "./context/dev/DevContextProvider";
+import Settings from "./pages/Settings";
 
 function App() {
   return (
@@ -41,6 +42,15 @@ function App() {
                 element={
                   <PublicRoute>
                     <Register />
+                  </PublicRoute>
+                }
+              />
+
+              <Route
+                path="/settings"
+                element={
+                  <PublicRoute>
+                    <Settings />
                   </PublicRoute>
                 }
               />
