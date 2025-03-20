@@ -31,7 +31,7 @@ export const useSingleData = <T>(
         config.devProxyFuncId,
         JSON.stringify({
           pathname: url,
-          queryParams: "",
+          queryParams: {},
         })
       );
 
