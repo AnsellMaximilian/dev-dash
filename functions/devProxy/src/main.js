@@ -53,7 +53,6 @@ export default async ({ req, res, log, error }) => {
       headers['api-key'] = apiKey;
   
       let devToResponse;
-      log("ABOUT TO GET", url, queryString)
 
       if (method === 'GET') {
         const queryString = new URLSearchParams(queryParams).toString(); 
