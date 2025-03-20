@@ -54,7 +54,7 @@ export default async ({ req, res, log, error }) => {
   
       let devToResponse;
 
-      log("METHOD", method)
+      log("body", req.bodyJson, typeof req.bodyJson)
 
       if (method === 'GET') {
         const queryString = new URLSearchParams(queryParams).toString(); 
