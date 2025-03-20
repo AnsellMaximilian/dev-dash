@@ -4,6 +4,7 @@ import { SingularData } from "../types/common";
 import axiosInstance from "../lib/axios";
 import { DevDataContext } from "../context/dev/DevDataContext";
 import { getCatchErrorMessage } from "../lib/utils/error";
+import { config, functions } from "../lib/appwrite";
 
 export const useDev = () => {
   const context = useContext(DevContext);
@@ -27,8 +28,15 @@ export const useSingleData = <T>(
     setError(null);
 
     try {
-      const response = await axiosInstance.get(url);
-      setData(response.data);
+      const response = await functions.createExecution(
+        config.devProxyFuncId, // Your Appwrite function ID
+        JSON.stringify({
+          pathname: url,
+          queryParams: "",
+        })
+      );
+
+      console.log(response);
     } catch (error) {
       const msg = getCatchErrorMessage(error, "Error fetching data");
       setError(msg);
