@@ -1,10 +1,9 @@
 import { createContext } from "react";
+import { SingularData } from "../../types/common";
+import { DevUser } from "../../types/dev";
 
 interface DevDataContext {
-  apiKey: string | null;
-  submitApiKey: (key: string) => Promise<void>;
-  deleteApiKey: () => Promise<void>;
-  loading: boolean;
+  devUser: SingularData<DevUser>;
 }
 
 export const DevDataContext = createContext<DevDataContext | undefined>(

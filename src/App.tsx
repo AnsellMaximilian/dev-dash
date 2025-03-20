@@ -11,51 +11,54 @@ import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { DevProvider } from "./context/dev/DevContextProvider";
 import Settings from "./pages/Settings";
+import { DevDataContextProvider } from "./context/dev/DevDataContextProvider";
 
 function App() {
   return (
     <AuthProvider>
       <NotificationProvider>
         <DevProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <ProtectedRoute>
-                    <DashboardLayout>
-                      <Dashboard />
-                    </DashboardLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/login"
-                element={
-                  <PublicRoute>
-                    <Login />
-                  </PublicRoute>
-                }
-              />
-              <Route
-                path="/register"
-                element={
-                  <PublicRoute>
-                    <Register />
-                  </PublicRoute>
-                }
-              />
+          <DevDataContextProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <Dashboard />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/login"
+                  element={
+                    <PublicRoute>
+                      <Login />
+                    </PublicRoute>
+                  }
+                />
+                <Route
+                  path="/register"
+                  element={
+                    <PublicRoute>
+                      <Register />
+                    </PublicRoute>
+                  }
+                />
 
-              <Route
-                path="/settings"
-                element={
-                  <PublicRoute>
-                    <Settings />
-                  </PublicRoute>
-                }
-              />
-            </Routes>
-          </BrowserRouter>
+                <Route
+                  path="/settings"
+                  element={
+                    <PublicRoute>
+                      <Settings />
+                    </PublicRoute>
+                  }
+                />
+              </Routes>
+            </BrowserRouter>
+          </DevDataContextProvider>
         </DevProvider>
       </NotificationProvider>
     </AuthProvider>
