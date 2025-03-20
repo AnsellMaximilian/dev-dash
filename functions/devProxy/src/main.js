@@ -34,14 +34,14 @@ export default async ({ req, res, log, error }) => {
         });
       }
 
-      log("USER ID", userId)
       log("DB_ID", process.env.DB_ID)
       log("API_KEY_COLLECTION_ID", process.env.API_KEY_COLLECTION_ID)
+      log("USER ID", userId)
   
       const userDoc = await databases.getDocument(
-        process.env.DB_ID, 
-        process.env.API_KEY_COLLECTION_ID, 
-        userId
+        "67d3cc7f001580b6f37c", 
+        "67d7e1240038996026cf", 
+        "67d7c14600302bce843f"
       );
   
       const apiKey = userDoc.key; 
@@ -59,6 +59,7 @@ export default async ({ req, res, log, error }) => {
       if (method === 'GET') {
         const queryString = new URLSearchParams(queryParams).toString(); 
         const fullUrl = `${url}?${queryString}`; 
+        log(fullUrl)
         devToResponse = await fetch(fullUrl, {
           method: 'GET',
           headers: headers,
