@@ -55,7 +55,9 @@ export default async ({ req, res, log, error }) => {
       if (method === 'GET') {
         const queryString = new URLSearchParams(queryParams).toString(); 
         const fullUrl = `${url}?${queryString}`; 
-  
+
+      log("Swagger")
+  log(fullUrl)
         devToResponse = await fetch(fullUrl, {
           method: 'GET',
           headers: headers,
