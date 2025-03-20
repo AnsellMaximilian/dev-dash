@@ -8,7 +8,7 @@ export const drawerItems: DrawerItemProps[] = [
     text: "Home",
     svgIcon: icons.homeIcon,
     selected: true,
-    route: "",
+    route: "/",
   },
   {
     separator: true,
