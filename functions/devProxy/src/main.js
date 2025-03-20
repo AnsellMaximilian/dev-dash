@@ -39,9 +39,9 @@ export default async ({ req, res, log, error }) => {
       log("USER ID", userId)
   
       const userDoc = await databases.getDocument(
-        "67d3cc7f001580b6f37c", 
-        "67d7e1240038996026cf", 
-        "67d7c14600302bce843f"
+        process.env.DB_ID, 
+        process.env.API_KEY_COLLECTION_ID, 
+        userId
       );
   
       const apiKey = userDoc.key; 
@@ -86,6 +86,8 @@ export default async ({ req, res, log, error }) => {
       });
   
     } catch (e) {
+
+      error(e);
       error("Error forwarding request to Dev.to API: " + e.message);
   
       return res.json({

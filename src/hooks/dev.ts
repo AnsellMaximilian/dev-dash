@@ -37,6 +37,12 @@ export const useSingleData = <T>(
       );
 
       console.log(response);
+
+      if (response.status === "completed") {
+        setData(JSON.parse(response.responseBody)); // Set the data returned from the function
+      } else {
+        setError("Error fetching data");
+      }
     } catch (error) {
       const msg = getCatchErrorMessage(error, "Error fetching data");
       setError(msg);
