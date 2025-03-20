@@ -1,18 +1,23 @@
 import { TextBox } from "@progress/kendo-react-inputs";
+import { SvgIcon } from "@progress/kendo-react-common";
+import * as svgIcons from "@progress/kendo-svg-icons";
+
 import {
   TabStrip,
   TabStripSelectEventArguments,
   TabStripTab,
 } from "@progress/kendo-react-layout";
 import { useEffect, useState } from "react";
-import { useDev } from "../hooks/dev";
+import { useDev, useDevData } from "../hooks/dev";
 import { Button } from "@progress/kendo-react-buttons";
+import { Tooltip } from "@progress/kendo-react-tooltip";
 
 export default function Settings() {
   const [tabSelected, setTabSelected] = useState(0);
   const [apiKeyText, setApiKeyText] = useState("");
 
   const { apiKey, submitApiKey, loading } = useDev();
+  const { devUser } = useDevData();
 
   useEffect(() => {
     if (apiKey) {
@@ -28,6 +33,8 @@ export default function Settings() {
     // await submitApiKey(apiKeyText);
     await submitApiKey(apiKeyText);
   };
+
+  console.log(devUser);
 
   return (
     <div>
@@ -52,6 +59,25 @@ export default function Settings() {
             >
               Change
             </Button>
+            <Tooltip anchorElement="target" position="top" parentTitle>
+              <div
+                title={
+                  devUser.error
+                    ? "This API key is invalid"
+                    : "This API key is valid"
+                }
+              >
+                <SvgIcon
+                  icon={
+                    devUser.error
+                      ? svgIcons.xCircleIcon
+                      : svgIcons.checkCircleIcon
+                  }
+                  size="xlarge"
+                  color={devUser.error ? "red" : "green"}
+                />
+              </div>
+            </Tooltip>
           </div>
         </TabStripTab>
         <TabStripTab title="Basketball">

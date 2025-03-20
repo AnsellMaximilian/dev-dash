@@ -2,6 +2,8 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { DevContext } from "../context/dev/DevContext";
 import { SingularData } from "../types/common";
 import axiosInstance from "../lib/axios";
+import { DevDataContext } from "../context/dev/DevDataContext";
+import { getCatchErrorMessage } from "../lib/utils/error";
 
 export const useDev = () => {
   const context = useContext(DevContext);
@@ -28,7 +30,8 @@ export const useSingleData = <T>(
       const response = await axiosInstance.get(url);
       setData(response.data);
     } catch (error) {
-      setError("Error fetching data");
+      const msg = getCatchErrorMessage(error, "Error fetching data");
+      setError(msg);
       console.error(error);
     } finally {
       setLoading(false);
@@ -44,4 +47,12 @@ export const useSingleData = <T>(
     error,
     fetchData,
   };
+};
+
+export const useDevData = () => {
+  const context = useContext(DevDataContext);
+  if (!context) {
+    throw new Error("useDevData must be used within a DevDataContextProvider");
+  }
+  return context;
 };

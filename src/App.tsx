@@ -48,18 +48,19 @@ function App() {
                   }
                 />
 
-              <Route
-                path="/settings"
-                element={
-                  <ProtectedRoute>
-                    <DashboardLayout>
-                      <Settings />
-                    </DashboardLayout>
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-          </BrowserRouter>
+                <Route
+                  path="/settings"
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <Settings />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
+              </Routes>
+            </BrowserRouter>
+          </DevDataContextProvider>
         </DevProvider>
       </NotificationProvider>
     </AuthProvider>
