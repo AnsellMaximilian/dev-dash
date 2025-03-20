@@ -33,6 +33,10 @@ export default async ({ req, res, log, error }) => {
           error: 'User ID is missing from the request.',
         });
       }
+
+      log("USER ID", userId)
+      log("DB_ID", process.env.DB_ID)
+      log("API_KEY_COLLECTION_ID", process.env.API_KEY_COLLECTION_ID)
   
       const userDoc = await databases.getDocument(
         process.env.DB_ID, 
@@ -55,9 +59,6 @@ export default async ({ req, res, log, error }) => {
       if (method === 'GET') {
         const queryString = new URLSearchParams(queryParams).toString(); 
         const fullUrl = `${url}?${queryString}`; 
-
-      log("Swagger")
-  log(fullUrl)
         devToResponse = await fetch(fullUrl, {
           method: 'GET',
           headers: headers,
