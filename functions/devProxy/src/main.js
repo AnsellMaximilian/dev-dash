@@ -47,11 +47,12 @@ export default async ({ req, res, log, error }) => {
         process.env.API_KEY_COLLECTION_ID, 
         userId
       );
-      log("FETCHED USERDOC")
+      log("FETCHED USERDOC", userDoc)
 
   
       const apiKey = userDoc.key; 
       if (!apiKey) {
+        log("ABOUT TO RETURN API KEY?")
         return res.status(400).json({
           success: false,
           error: 'API key not found for the user.',
