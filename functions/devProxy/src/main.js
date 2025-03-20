@@ -1,3 +1,4 @@
+import { Account, Databases } from 'appwrite';
 import { Client, Users } from 'node-appwrite';
 
 // This Appwrite function will be executed every time your function is triggered
@@ -5,31 +6,89 @@ export default async ({ req, res, log, error }) => {
   // You can use the Appwrite SDK to interact with other services
   // For this example, we're using the Users service
   const client = new Client()
-    .setEndpoint(process.env.APPWRITE_FUNCTION_API_ENDPOINT)
+    .setEndpoint("https://cloud.appwrite.io/v1")
     .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
-    .setKey(req.headers['x-appwrite-key'] ?? '');
-  const users = new Users(client);
+    .setKey(process.env.APPWRITE_API_KEY);
 
-  try {
-    const response = await users.list();
-    // Log messages and errors to the Appwrite Console
-    // These logs won't be seen by your end users
-    log(`Total users: ${response.total}`);
-  } catch(err) {
-    error("Could not list users: " + err.message);
-  }
 
-  // The req object contains the request data
-  if (req.path === "/ping") {
-    // Use res object to respond with text(), json(), or binary()
-    // Don't forget to return a response!
-    return res.text("Pong");
-  }
+    const databases = new Databases(client);
 
-  return res.json({
-    motto: "Build like a team of hundreds_",
-    learn: "https://appwrite.io/docs",
-    connect: "https://appwrite.io/discord",
-    getInspired: "https://builtwith.appwrite.io",
-  });
+    const DEVTO_API_URL = 'https://dev.to/api';
+  
+    const userId = req.headers['x-appwrite-user-id'];
+  
+    const method = req.method;
+    
+    const { pathname, queryParams } = req.body; 
+  
+    const url = `${DEVTO_API_URL}${pathname}`; 
+  
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+  
+    try {
+      if (!userId) {
+        return res.status(400).json({
+          success: false,
+          error: 'User ID is missing from the request.',
+        });
+      }
+  
+      const userDoc = await databases.getDocument(
+        process.env.DB_ID, 
+        process.env.API_KEY_COLLECTION_ID, 
+        userId
+      );
+  
+      const apiKey = userDoc.key; 
+      if (!apiKey) {
+        return res.status(400).json({
+          success: false,
+          error: 'API key not found for the user.',
+        });
+      }
+  
+      headers['api-key'] = apiKey;
+  
+      let devToResponse;
+  
+      if (method === 'GET') {
+        const queryString = new URLSearchParams(queryParams).toString(); 
+        const fullUrl = `${url}?${queryString}`; 
+  
+        devToResponse = await fetch(fullUrl, {
+          method: 'GET',
+          headers: headers,
+        });
+      } else if (method === 'POST') {
+        devToResponse = await fetch(url, {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(req.body), 
+        });
+      } else {
+        return res.status(405).json({ error: `Method ${method} not allowed` });
+      }
+  
+      if (!devToResponse.ok) {
+        throw new Error(`Error: ${devToResponse.status} - ${devToResponse.statusText}`);
+      }
+  
+      const result = await devToResponse.json();
+  
+      return res.json({
+        success: true,
+        data: result,
+      });
+  
+    } catch (e) {
+      error("Error forwarding request to Dev.to API: " + e.message);
+  
+      return res.json({
+        success: false,
+        error: e.message,
+      });
+    }
+  
 };
