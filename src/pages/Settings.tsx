@@ -34,8 +34,6 @@ export default function Settings() {
     await submitApiKey(apiKeyText);
   };
 
-  console.log(devUser);
-
   return (
     <div>
       <h1 className="h3">Settings</h1>
@@ -46,38 +44,55 @@ export default function Settings() {
         className="w-100"
       >
         <TabStripTab title="Dev Account">
-          <div className="mb-2 h6">API Key</div>
-          <div className="d-flex align-items-center" style={{ gap: 8 }}>
-            <TextBox
-              placeholder="API Key"
-              value={apiKeyText}
-              onChange={(e) => setApiKeyText(e.value as string)}
-            />
-            <Button
-              disabled={apiKey === apiKeyText || !apiKeyText || loading}
-              onClick={handleApiKeyChange}
-            >
-              Change
-            </Button>
-            <Tooltip anchorElement="target" position="top" parentTitle>
-              <div
-                title={
-                  devUser.error
-                    ? "This API key is invalid"
-                    : "This API key is valid"
-                }
+          <div>
+            <div className="mb-2 h6">API Key</div>
+            <div className="d-flex align-items-center" style={{ gap: 8 }}>
+              <TextBox
+                placeholder="API Key"
+                value={apiKeyText}
+                onChange={(e) => setApiKeyText(e.value as string)}
+              />
+              <Button
+                disabled={apiKey === apiKeyText || !apiKeyText || loading}
+                onClick={handleApiKeyChange}
               >
-                <SvgIcon
-                  icon={
+                Change
+              </Button>
+              <Tooltip anchorElement="target" position="top" parentTitle>
+                <div
+                  title={
                     devUser.error
-                      ? svgIcons.xCircleIcon
-                      : svgIcons.checkCircleIcon
+                      ? "This API key is invalid"
+                      : "This API key is valid"
                   }
-                  size="xlarge"
-                  color={devUser.error ? "red" : "green"}
-                />
+                >
+                  <SvgIcon
+                    icon={
+                      devUser.error
+                        ? svgIcons.xCircleIcon
+                        : svgIcons.checkCircleIcon
+                    }
+                    size="xlarge"
+                    color={devUser.error ? "red" : "green"}
+                  />
+                </div>
+              </Tooltip>
+            </div>
+            {devUser.data ? (
+              <>
+                <div className="mt-4">
+                  <h2 className="h4">Dev Account</h2>
+                  <div>{devUser.data?.name}</div>
+                </div>
+              </>
+            ) : (
+              <div className="mt-4">
+                <p className="small">
+                  Once you've submitted a valid API key, your Dev.to data will
+                  show up here.
+                </p>
               </div>
-            </Tooltip>
+            )}
           </div>
         </TabStripTab>
         <TabStripTab title="Basketball">

@@ -5,6 +5,7 @@ import { DevDataContext } from "../context/dev/DevDataContext";
 import { getCatchErrorMessage } from "../lib/utils/error";
 import { config, functions } from "../lib/appwrite";
 import { ExecutionMethod } from "appwrite";
+import { AppwriteFuncResponse } from "../types/appwrite";
 
 export const useDev = () => {
   const context = useContext(DevContext);
@@ -39,10 +40,16 @@ export const useSingleData = <T>(
         ExecutionMethod.GET
       );
 
-      console.log(response);
-
       if (response.status === "completed") {
-        setData(JSON.parse(response.responseBody));
+        const result: AppwriteFuncResponse<T> = JSON.parse(
+          response.responseBody
+        );
+
+        if (result.success) {
+          setData(result.data);
+        } else {
+          setError("Error fetching data in proxy.");
+        }
       } else {
         setError("Error fetching data");
       }
