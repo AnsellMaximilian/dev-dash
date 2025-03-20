@@ -4,6 +4,7 @@ import { SingularData } from "../types/common";
 import { DevDataContext } from "../context/dev/DevDataContext";
 import { getCatchErrorMessage } from "../lib/utils/error";
 import { config, functions } from "../lib/appwrite";
+import { ExecutionMethod } from "appwrite";
 
 export const useDev = () => {
   const context = useContext(DevContext);
@@ -32,7 +33,10 @@ export const useSingleData = <T>(
         JSON.stringify({
           pathname: url,
           queryParams: {},
-        })
+        }),
+        undefined,
+        undefined,
+        ExecutionMethod.GET
       );
 
       console.log(response);
