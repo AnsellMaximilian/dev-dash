@@ -3,12 +3,14 @@ import { useEffect, useRef, useState } from "react";
 import { Popup, PopupHandle } from "@progress/kendo-react-popup";
 import { useAuth } from "../hooks/auth";
 import { Button } from "@progress/kendo-react-buttons";
+import { useDevData } from "../hooks/dev";
 
 const kendokaAvatar =
   "https://demos.telerik.com/kendo-react-ui/assets/suite/kendoka-react.png";
 
 export default function UserAvatar() {
   const { user, logoutUser } = useAuth();
+  const { devUser } = useDevData();
 
   const anchor = useRef<HTMLDivElement | null>(null);
   const popupRef = useRef<PopupHandle | null>(null);
@@ -44,7 +46,14 @@ export default function UserAvatar() {
     <div>
       <div onClick={onClick} ref={anchor} style={{ cursor: "pointer" }}>
         <Avatar type="image">
-          <img src={kendokaAvatar} alt="KendoReact Layout Kendoka Avatar" />
+          <img
+            src={
+              devUser.data?.profile_image
+                ? devUser.data.profile_image
+                : kendokaAvatar
+            }
+            alt="KendoReact Layout Kendoka Avatar"
+          />
         </Avatar>
       </div>
       <Popup

@@ -3,6 +3,7 @@ import notFoundImg from "../assets/not-found.svg";
 import { useMemo, useState } from "react";
 import APIKeyDialog from "../components/dashboard/APIKeyDialog";
 import { useDev, useDevData } from "../hooks/dev";
+import { Icon } from "@progress/kendo-react-common";
 import {
   TileLayout,
   TileLayoutItem,
@@ -13,7 +14,7 @@ import Tile from "../components/dashboard/Tile";
 export default function Dashboard() {
   const [apiKeyDialogOpen, setApiKeyDialogOpen] = useState(false);
   const [tileData, setTileData] = useState([
-    { col: 1, colSpan: 3, rowSpan: 1 },
+    { col: 1, colSpan: 4, rowSpan: 1 },
     { col: 1, colSpan: 2, rowSpan: 1 },
     { col: 1, colSpan: 2, rowSpan: 2 },
     { col: 4, colSpan: 1, rowSpan: 1 },
@@ -57,8 +58,26 @@ export default function Dashboard() {
                     <dt className="small">
                       <strong>Username</strong>
                     </dt>
-                    <dd>@{devUser.data.username}</dd>
+                    <dd>
+                      <a
+                        href={`https://dev.to/${devUser.data.username}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        @{devUser.data.username}
+                      </a>
+                    </dd>
+                    <dt className="small">
+                      <strong>Summary</strong>
+                    </dt>
+                    <dd className="small">
+                      {devUser.data.summary || "No profile summary."}
+                    </dd>
                   </dl>
+
+                  <div>
+                    <Icon name="twitter" />
+                  </div>
                 </div>
               </div>
             )}
