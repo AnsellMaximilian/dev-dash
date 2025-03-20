@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { DevContext } from "../context/dev/DevContext";
-import { SingularData } from "../types/common";
+import { PaginatedData, SingularData } from "../types/common";
 import { DevDataContext } from "../context/dev/DevDataContext";
 import { getCatchErrorMessage } from "../lib/utils/error";
 import { config, functions } from "../lib/appwrite";
@@ -69,6 +69,74 @@ export const useSingleData = <T>(
     data,
     loading,
     error,
+    fetchData,
+  };
+};
+
+export const usePaginatedData = <T>(
+  apiKey: string | null,
+  url: string,
+  perPage: number = 10
+): PaginatedData<T> => {
+  const [data, setData] = useState<T[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const fetchData = useCallback(
+    async (page: number) => {
+      if (!apiKey) return;
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await functions.createExecution(
+          config.devProxyFuncId,
+          JSON.stringify({
+            pathname: url,
+            queryParams: {
+              page,
+              per_page: perPage,
+            },
+          }),
+          undefined,
+          undefined,
+          ExecutionMethod.GET
+        );
+
+        if (response.status === "completed") {
+          const result: AppwriteFuncResponse<T[]> = JSON.parse(
+            response.responseBody
+          );
+
+          if (result.success) {
+            setData(result.data);
+            setCurrentPage(page);
+          } else {
+            setError("Error fetching data in proxy.");
+          }
+        } else {
+          setError("Error fetching data");
+        }
+      } catch (error) {
+        const msg = getCatchErrorMessage(error, "Error fetching data");
+        setError(msg);
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [apiKey, url, perPage]
+  );
+
+  return {
+    data,
+    error,
+    loading,
+    pagination: {
+      currentPage,
+      perPage,
+    },
     fetchData,
   };
 };
