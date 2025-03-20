@@ -14,9 +14,9 @@ export const drawerItems: DrawerItemProps[] = [
     separator: true,
   },
   {
-    text: "Posts",
+    text: "Articles",
     svgIcon: icons.stickyNoteIcon,
-    route: "/posts",
+    route: "/articles",
   },
   {
     separator: true,

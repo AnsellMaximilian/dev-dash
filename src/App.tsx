@@ -12,6 +12,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { DevProvider } from "./context/dev/DevContextProvider";
 import Settings from "./pages/Settings";
 import { DevDataContextProvider } from "./context/dev/DevDataContextProvider";
+import Articles from "./pages/Articles";
 
 function App() {
   return (
@@ -54,6 +55,17 @@ function App() {
                     <ProtectedRoute>
                       <DashboardLayout>
                         <Settings />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="/articles"
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <Articles />
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
