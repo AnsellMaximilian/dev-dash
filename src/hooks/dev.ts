@@ -1,7 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { DevContext } from "../context/dev/DevContext";
 import { SingularData } from "../types/common";
-import axiosInstance from "../lib/axios";
 import { DevDataContext } from "../context/dev/DevDataContext";
 import { getCatchErrorMessage } from "../lib/utils/error";
 import { config, functions } from "../lib/appwrite";
@@ -29,7 +28,7 @@ export const useSingleData = <T>(
 
     try {
       const response = await functions.createExecution(
-        config.devProxyFuncId, // Your Appwrite function ID
+        config.devProxyFuncId,
         JSON.stringify({
           pathname: url,
           queryParams: "",
@@ -39,7 +38,7 @@ export const useSingleData = <T>(
       console.log(response);
 
       if (response.status === "completed") {
-        setData(JSON.parse(response.responseBody)); // Set the data returned from the function
+        setData(JSON.parse(response.responseBody));
       } else {
         setError("Error fetching data");
       }

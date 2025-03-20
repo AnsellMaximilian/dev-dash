@@ -37,12 +37,18 @@ export default async ({ req, res, log, error }) => {
       log("DB_ID", process.env.DB_ID)
       log("API_KEY_COLLECTION_ID", process.env.API_KEY_COLLECTION_ID)
       log("USER ID", userId)
+
+      const docs = await databases.listDocuments(process.env.DB_ID, process.env.API_KEY_COLLECTION_ID);
+      log("FETCHED DOCS")
+      log(docs.documents)
   
       const userDoc = await databases.getDocument(
         process.env.DB_ID, 
         process.env.API_KEY_COLLECTION_ID, 
         userId
       );
+      log("FETCHED USERDOC")
+
   
       const apiKey = userDoc.key; 
       if (!apiKey) {
