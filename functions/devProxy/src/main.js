@@ -18,7 +18,7 @@ export default async ({ req, res, log, error }) => {
   
     const method = req.method;
     
-    const { pathname, queryParams } = req.body; 
+    const { pathname, queryParams, postBody } = req.bodyJson; 
   
     const url = `${DEVTO_API_URL}${pathname}`; 
   
@@ -39,11 +39,9 @@ export default async ({ req, res, log, error }) => {
         process.env.API_KEY_COLLECTION_ID, 
         userId
       );
-      log("FETCHED USERDOC", userDoc)
   
       const apiKey = userDoc.key; 
       if (!apiKey) {
-        log("ABOUT TO RETURN API KEY?")
         return res.status(400).json({
           success: false,
           error: 'API key not found for the user.',
@@ -54,7 +52,6 @@ export default async ({ req, res, log, error }) => {
   
       let devToResponse;
 
-      log("body", req.bodyJson, typeof req.bodyJson)
 
       if (method === 'GET') {
         const queryString = new URLSearchParams(queryParams).toString(); 
@@ -68,7 +65,7 @@ export default async ({ req, res, log, error }) => {
         devToResponse = await fetch(url, {
           method: 'POST',
           headers: headers,
-          body: JSON.stringify(req.body), 
+          body: JSON.stringify(postBody), 
         });
       } else {
         return res.status(405).json({ error: `Method ${method} not allowed` });
