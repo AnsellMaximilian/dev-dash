@@ -33,14 +33,6 @@ export default async ({ req, res, log, error }) => {
           error: 'User ID is missing from the request.',
         });
       }
-
-      log("DB_ID", process.env.DB_ID)
-      log("API_KEY_COLLECTION_ID", process.env.API_KEY_COLLECTION_ID)
-      log("USER ID", userId)
-
-      const docs = await databases.listDocuments(process.env.DB_ID, process.env.API_KEY_COLLECTION_ID);
-      log("FETCHED DOCS")
-      log(docs.documents)
   
       const userDoc = await databases.getDocument(
         process.env.DB_ID, 
@@ -48,7 +40,6 @@ export default async ({ req, res, log, error }) => {
         userId
       );
       log("FETCHED USERDOC", userDoc)
-
   
       const apiKey = userDoc.key; 
       if (!apiKey) {
