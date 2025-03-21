@@ -23,3 +23,7 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+.icon-btn:hover {
+  opacity: 80%;
+}

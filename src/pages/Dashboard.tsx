@@ -3,7 +3,9 @@ import notFoundImg from "../assets/not-found.svg";
 import { useMemo, useState } from "react";
 import APIKeyDialog from "../components/dashboard/APIKeyDialog";
 import { useDev, useDevData } from "../hooks/dev";
-import { Icon } from "@progress/kendo-react-common";
+import { SvgIcon } from "@progress/kendo-react-common";
+import * as svgIcons from "@progress/kendo-svg-icons";
+import { FaGithub } from "react-icons/fa";
 import {
   TileLayout,
   TileLayoutItem,
@@ -37,46 +39,66 @@ export default function Dashboard() {
         body: (
           <Tile metadata={{ loading: devUser.loading, error: devUser.error }}>
             {devUser.data && (
-              <div
-                className="d-flex align-items-center h-100"
-                style={{ gap: 16 }}
-              >
-                <img
-                  src={devUser.data.profile_image}
-                  alt="Profile"
-                  className="rounded-circle d-block"
-                  style={{
-                    width: 125,
-                  }}
-                />
-                <div className="d-flex" style={{ gap: 8 }}>
-                  <dl>
-                    <dt className="small">
-                      <strong>Name</strong>
-                    </dt>
-                    <dd>{devUser.data.name}</dd>
-                    <dt className="small">
-                      <strong>Username</strong>
-                    </dt>
-                    <dd>
-                      <a
-                        href={`https://dev.to/${devUser.data.username}`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        @{devUser.data.username}
-                      </a>
-                    </dd>
-                    <dt className="small">
-                      <strong>Summary</strong>
-                    </dt>
-                    <dd className="small">
-                      {devUser.data.summary || "No profile summary."}
-                    </dd>
-                  </dl>
-
+              <div className="d-flex h-100" style={{ gap: 16 }}>
+                <div className="d-flex flex-column">
+                  <img
+                    src={devUser.data.profile_image}
+                    alt="Profile"
+                    className="rounded-circle d-block"
+                    style={{
+                      width: 125,
+                      height: 125,
+                    }}
+                  />
+                  <div
+                    className="d-flex justify-content-center mt-3"
+                    style={{ gap: 8 }}
+                  >
+                    <a
+                      href={`https://github.com/${devUser.data.github_username}`}
+                      target="_blank"
+                      className="d-flex align-items-center icon-btn"
+                    >
+                      <FaGithub size={24} color="black" />
+                    </a>
+                    <a
+                      href={`https://x.com/${devUser.data.twitter_username}`}
+                      target="_blank"
+                      className="d-flex align-items-center icon-btn"
+                    >
+                      <SvgIcon
+                        icon={svgIcons.twitterIcon}
+                        color="#1DA1F2"
+                        size="xlarge"
+                      />
+                    </a>
+                    <a
+                      href={devUser.data.website_url}
+                      target="_blank"
+                      className="d-flex align-items-center icon-btn"
+                    >
+                      <SvgIcon
+                        icon={svgIcons.globeOutlineIcon}
+                        color="gray"
+                        size="xlarge"
+                      />
+                    </a>
+                  </div>
+                </div>
+                <div className="d-flex h-100" style={{ gap: 24 }}>
                   <div>
-                    <Icon name="twitter" />
+                    <h2 className="h4 m-0">{devUser.data.name}</h2>
+                    <a
+                      href={`https://dev.to/${devUser.data.username}`}
+                      target="_blank"
+                      className="small"
+                    >
+                      @{devUser.data.username}
+                    </a>
+
+                    <div className="mt-2 small">
+                      {devUser.data.summary || "No summary yet."}
+                    </div>
                   </div>
                 </div>
               </div>
