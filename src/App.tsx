@@ -13,6 +13,7 @@ import { DevProvider } from "./context/dev/DevContextProvider";
 import Settings from "./pages/Settings";
 import { DevDataContextProvider } from "./context/dev/DevDataContextProvider";
 import Articles from "./pages/Articles";
+import CreateArticle from "./pages/CreateArticle";
 
 function App() {
   return (
@@ -60,16 +61,28 @@ function App() {
                   }
                 />
 
-                <Route
-                  path="/articles"
-                  element={
-                    <ProtectedRoute>
-                      <DashboardLayout>
-                        <Articles />
-                      </DashboardLayout>
-                    </ProtectedRoute>
-                  }
-                />
+                <Route path="/articles">
+                  <Route
+                    path=""
+                    element={
+                      <ProtectedRoute>
+                        <DashboardLayout>
+                          <Articles />
+                        </DashboardLayout>
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="new"
+                    element={
+                      <ProtectedRoute>
+                        <DashboardLayout>
+                          <CreateArticle />
+                        </DashboardLayout>
+                      </ProtectedRoute>
+                    }
+                  />
+                </Route>
               </Routes>
             </BrowserRouter>
           </DevDataContextProvider>

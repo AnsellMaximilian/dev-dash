@@ -6,21 +6,26 @@ import { Article } from "../types/dev";
 import clsx from "clsx";
 import { SvgIcon } from "@progress/kendo-react-common";
 import * as icons from "@progress/kendo-svg-icons";
-import { Button } from "@progress/kendo-react-buttons";
+import { Button, FloatingActionButton } from "@progress/kendo-react-buttons";
 import { useAuth } from "../hooks/auth";
 import { updateUserData } from "../service/userData";
 import { getCatchErrorMessage } from "../lib/utils/error";
 import { useNotification } from "../hooks/useNotification";
+import { useNavigate } from "react-router-dom";
 
 export default function Articles() {
   const { apiKey } = useDev();
   const { userData, user } = useAuth();
 
-  const { data, fetchData } = useMaxData<Article>(apiKey, "/articles/me/all");
+  const { data, fetchData, loading } = useMaxData<Article>(
+    apiKey,
+    "/articles/me/all"
+  );
   const [skip, setSkip] = useState(0);
   const [take, setTake] = useState(5);
 
   const notify = useNotification();
+  const navigate = useNavigate();
   const pinnedArticleIds = userData.data?.pinnedArticles || [];
 
   const handlePageChange = (event: PageChangeEvent) => {
@@ -66,6 +71,7 @@ export default function Articles() {
       <h1 className="h3">Articles</h1>
       <div>
         <Grid
+          showLoader={loading}
           data={pagedArticles}
           style={{ height: "400px" }}
           resizable
@@ -156,6 +162,13 @@ export default function Articles() {
           onPageChange={handlePageChange}
         />
       </div>
+
+      <FloatingActionButton
+        svgIcon={icons.plusIcon}
+        onClick={() => {
+          navigate("/articles/new");
+        }}
+      />
     </div>
   );
 }

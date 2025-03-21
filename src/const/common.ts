@@ -22,6 +22,22 @@ export const drawerItems: DrawerItemProps[] = [
     separator: true,
   },
   {
+    text: "Badge Progress",
+    svgIcon: icons.shapesIcon,
+    route: "/articles",
+  },
+  {
+    separator: true,
+  },
+  {
+    text: "Public Profile",
+    svgIcon: icons.userIcon,
+    route: "/articles",
+  },
+  {
+    separator: true,
+  },
+  {
     text: "Settings",
     svgIcon: icons.gearIcon,
     route: "/settings",
