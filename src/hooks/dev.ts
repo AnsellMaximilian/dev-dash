@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { DevContext } from "../context/dev/DevContext";
-import { PaginatedData, SingularData } from "../types/common";
+import { MaxData, PaginatedData, SingularData } from "../types/common";
 import { DevDataContext } from "../context/dev/DevDataContext";
 import { getCatchErrorMessage } from "../lib/utils/error";
 import { config, functions } from "../lib/appwrite";
@@ -70,6 +70,7 @@ export const useSingleData = <T>(
     loading,
     error,
     fetchData,
+    setData,
   };
 };
 
@@ -138,6 +139,67 @@ export const usePaginatedData = <T>(
       perPage,
     },
     fetchData,
+  };
+};
+
+export const useMaxData = <T>(
+  apiKey: string | null,
+  url: string,
+  customFetchData?: () => Promise<T[]>
+): MaxData<T> => {
+  const [data, setData] = useState<T[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const fetchData = useCallback(async () => {
+    if (!apiKey) return;
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await functions.createExecution(
+        config.devProxyFuncId,
+        JSON.stringify({
+          pathname: url,
+          queryParams: {
+            page: 1,
+            per_page: 1000,
+          },
+        }),
+        undefined,
+        undefined,
+        ExecutionMethod.GET
+      );
+
+      if (response.status === "completed") {
+        const result: AppwriteFuncResponse<T[]> = JSON.parse(
+          response.responseBody
+        );
+
+        if (result.success) {
+          setData(result.data);
+        } else {
+          setError("Error fetching data in proxy.");
+        }
+      } else {
+        setError("Error fetching data");
+      }
+    } catch (error) {
+      const msg = getCatchErrorMessage(error, "Error fetching data");
+      setError(msg);
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }, [apiKey, url]);
+
+  return {
+    data,
+    error,
+    loading,
+    fetchData,
+    setData,
+    customFetchData,
   };
 };
 

@@ -2,10 +2,17 @@ import { ReactNode, useEffect, useState } from "react";
 import { getCurrentUser, login, logout, register } from "../../service/auth";
 import { User } from "../../types/auth";
 import { AuthContext } from "./AuthContext";
+import { UserData } from "../../types/appwrite";
+import { useSingleData } from "../../hooks/appwrite";
+import { config } from "../../lib/appwrite";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const userData = useSingleData<UserData>(
+    config.userDataCollectionId,
+    user?.$id
+  );
 
   useEffect(() => {
     getCurrentUser()
@@ -36,7 +43,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, loginUser, registerUser, logoutUser, loading }}
+      value={{ user, loginUser, registerUser, logoutUser, loading, userData }}
     >
       {children}
     </AuthContext.Provider>

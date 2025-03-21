@@ -1,4 +1,12 @@
+import { Models } from "appwrite";
+
 export interface AppwriteFuncResponse<T> {
   success: boolean;
   data: T;
+}
+
+export interface UserData extends Models.Document, UserDataBody {}
+
+export interface UserDataBody {
+  pinnedArticles: number[];
 }

@@ -7,6 +7,7 @@ export const config = {
   // collections
   apiKeyCollection: String(import.meta.env.VITE_API_KEY_COLLECTION_ID),
   devProxyFuncId: String(import.meta.env.VITE_DEV_PROXY_FUNCTION_ID),
+  userDataCollectionId: String(import.meta.env.VITE_USER_DATA_COLLECTION_ID),
 };
 
 export const client = new Client();
