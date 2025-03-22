@@ -27,3 +27,8 @@ body {
 .icon-btn:hover {
   opacity: 80%;
 }
+
+.hover-underline:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}

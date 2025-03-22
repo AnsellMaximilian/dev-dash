@@ -68,3 +68,10 @@ export interface DevUser {
   website_url?: string;
   location?: string;
 }
+
+export interface Tag {
+  id: number;
+  name: string;
+  bgColorHex: string;
+  textColorHex: string;
+}

@@ -1,5 +1,17 @@
 import { Dispatch, SetStateAction } from "react";
 
+export type JSONValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JSONObject
+  | JSONArray;
+export interface JSONObject {
+  [key: string]: JSONValue;
+}
+export type JSONArray = Array<JSONValue>;
+
 export interface SingularData<T> {
   data: T | null;
   loading: boolean;
@@ -18,7 +30,7 @@ export interface PaginatedData<T> {
   loading: boolean;
   error: string | null;
   pagination: Pagination;
-  fetchData: (page: number) => void;
+  fetchData: (page: number, params?: Record<string, JSONValue>) => void;
 }
 
 export interface MaxData<T> {

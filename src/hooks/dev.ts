@@ -1,6 +1,11 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { DevContext } from "../context/dev/DevContext";
-import { MaxData, PaginatedData, SingularData } from "../types/common";
+import {
+  JSONValue,
+  MaxData,
+  PaginatedData,
+  SingularData,
+} from "../types/common";
 import { DevDataContext } from "../context/dev/DevDataContext";
 import { getCatchErrorMessage } from "../lib/utils/error";
 import { config, functions } from "../lib/appwrite";
@@ -77,7 +82,8 @@ export const useSingleData = <T>(
 export const usePaginatedData = <T>(
   apiKey: string | null,
   url: string,
-  perPage: number = 10
+  perPage: number = 10,
+  publicApi: boolean = false
 ): PaginatedData<T> => {
   const [data, setData] = useState<T[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -85,10 +91,19 @@ export const usePaginatedData = <T>(
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const fetchData = useCallback(
-    async (page: number) => {
-      if (!apiKey) return;
+    async (page: number, params?: Record<string, JSONValue>) => {
+      if (!apiKey && !publicApi) return;
       setLoading(true);
       setError(null);
+
+      console.log({
+        pathname: url,
+        queryParams: {
+          page,
+          per_page: perPage,
+          ...(params || {}),
+        },
+      });
 
       try {
         const response = await functions.createExecution(
@@ -98,6 +113,7 @@ export const usePaginatedData = <T>(
             queryParams: {
               page,
               per_page: perPage,
+              ...(params || {}),
             },
           }),
           undefined,
@@ -127,7 +143,7 @@ export const usePaginatedData = <T>(
         setLoading(false);
       }
     },
-    [apiKey, url, perPage]
+    [apiKey, url, perPage, publicApi]
   );
 
   return {
@@ -145,14 +161,15 @@ export const usePaginatedData = <T>(
 export const useMaxData = <T>(
   apiKey: string | null,
   url: string,
-  customFetchData?: () => Promise<T[]>
+  customFetchData?: () => Promise<T[]>,
+  publicApi: boolean = false
 ): MaxData<T> => {
   const [data, setData] = useState<T[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   const fetchData = useCallback(async () => {
-    if (!apiKey) return;
+    if (!apiKey && !publicApi) return;
     setLoading(true);
     setError(null);
 
@@ -191,7 +208,7 @@ export const useMaxData = <T>(
     } finally {
       setLoading(false);
     }
-  }, [apiKey, url]);
+  }, [apiKey, url, publicApi]);
 
   return {
     data,

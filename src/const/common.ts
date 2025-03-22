@@ -14,6 +14,14 @@ export const drawerItems: DrawerItemProps[] = [
     separator: true,
   },
   {
+    text: "Feed",
+    svgIcon: icons.fileHeaderIcon,
+    route: "/feed",
+  },
+  {
+    separator: true,
+  },
+  {
     text: "Articles",
     svgIcon: icons.stickyNoteIcon,
     route: "/articles",
@@ -24,7 +32,7 @@ export const drawerItems: DrawerItemProps[] = [
   {
     text: "Badge Progress",
     svgIcon: icons.shapesIcon,
-    route: "/articles",
+    route: "/badge-progress",
   },
   {
     separator: true,
@@ -32,7 +40,7 @@ export const drawerItems: DrawerItemProps[] = [
   {
     text: "Public Profile",
     svgIcon: icons.userIcon,
-    route: "/articles",
+    route: "/public-profile",
   },
   {
     separator: true,

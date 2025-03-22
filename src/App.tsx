@@ -14,6 +14,9 @@ import Settings from "./pages/Settings";
 import { DevDataContextProvider } from "./context/dev/DevDataContextProvider";
 import Articles from "./pages/Articles";
 import CreateArticle from "./pages/CreateArticle";
+import BadgeProgress from "./pages/BadgeProgress";
+import PublicProfile from "./pages/PublicProfile";
+import Feed from "./pages/Feed";
 
 function App() {
   return (
@@ -60,29 +63,59 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
+                <Route
+                  path="/badge-progress"
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <BadgeProgress />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/public-profile"
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <PublicProfile />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-                <Route path="/articles">
-                  <Route
-                    path=""
-                    element={
-                      <ProtectedRoute>
-                        <DashboardLayout>
-                          <Articles />
-                        </DashboardLayout>
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="new"
-                    element={
-                      <ProtectedRoute>
-                        <DashboardLayout>
-                          <CreateArticle />
-                        </DashboardLayout>
-                      </ProtectedRoute>
-                    }
-                  />
-                </Route>
+                <Route
+                  path="/articles"
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <Articles />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="/articles/new"
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <CreateArticle />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="/feed"
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <Feed />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
               </Routes>
             </BrowserRouter>
           </DevDataContextProvider>
