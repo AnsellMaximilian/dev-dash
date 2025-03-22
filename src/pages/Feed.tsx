@@ -1,19 +1,26 @@
 import { useEffect, useRef, useState } from "react";
 import { useMaxData, usePaginatedData } from "../hooks/dev";
 import { Article, Tag } from "../types/dev";
+import * as icons from "@progress/kendo-svg-icons";
+import { Dialog, DialogActionsBar } from "@progress/kendo-react-dialogs";
+
 import {
   Card,
   CardHeader,
   CardBody,
   CardTitle,
-  CardImage,
-  CardFooter,
   CardActions,
+  TabStripSelectEventArguments,
+  TabStrip,
+  TabStripTab,
 } from "@progress/kendo-react-layout";
-import moment from "moment";
 import { Skeleton } from "@progress/kendo-react-indicators";
 import { Button } from "@progress/kendo-react-buttons";
 import { AutoComplete } from "@progress/kendo-react-dropdowns";
+import { Popup, PopupHandle } from "@progress/kendo-react-popup";
+import { ColorPalette, TextBox } from "@progress/kendo-react-inputs";
+import { libraryColors } from "../const/common";
+import ArticleCard from "../components/ArticleCard";
 
 export default function Feed() {
   const [page, setPage] = useState(1);
@@ -21,7 +28,24 @@ export default function Feed() {
   const [usernameFilter, setUsernameFilter] = useState("");
   const [allArticles, setAllArticles] = useState<Article[]>([]);
   const bottomRef = useRef<HTMLDivElement | null>(null);
+  const popoverAnchor = useRef<HTMLDivElement>(null);
+  const popupRef = useRef<PopupHandle | null>(null);
+  const popupContainerRef = useRef<HTMLDivElement | null>(null);
+
+  const [anchorArticle, setAnchorArticle] = useState<Article | null>(null);
+  const [dialogArticle, setDialogArticle] = useState<Article | null>(null);
+
   const [tagSearchValue, setTagSearchValue] = useState("");
+
+  const [tabSelected, setTabSelected] = useState<number>(0);
+
+  // library section
+  const [sectionColor, setSectionColor] = useState(libraryColors[0]);
+  const [sectionName, setSectionName] = useState("");
+
+  const handleTabSelect = (e: TabStripSelectEventArguments) => {
+    setTabSelected(e.selected);
+  };
 
   const { fetchData, data, loading } = usePaginatedData<Article>(
     null,
@@ -37,6 +61,33 @@ export default function Feed() {
     true
   );
 
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (
+        popoverAnchor.current &&
+        popoverAnchor.current.contains(event.target as Node)
+      ) {
+        return;
+      }
+
+      if (
+        popupContainerRef.current &&
+        popupContainerRef.current.contains(event.target as Node)
+      ) {
+        return;
+      }
+
+      setTimeout(() => setAnchorArticle(null), 0);
+    };
+
+    if (anchorArticle) {
+      document.addEventListener("mousedown", handleOutsideClick);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [anchorArticle]);
   useEffect(() => {
     console.log("fetching data");
     fetchData(page, {
@@ -80,68 +131,22 @@ export default function Feed() {
       <div className="row">
         <div className="d-flex flex-column col-8" style={{ gap: 16 }}>
           {allArticles.map((article, idx) => (
-            <Card key={`${article.id}-${idx}`}>
-              <CardImage src={article.cover_image} />
-              <CardHeader>
-                <CardTitle>
-                  <a href={article.url} target="_blank">
-                    {article.title}
-                  </a>
-                </CardTitle>
-              </CardHeader>
-              <CardBody>
-                <p>{article.description}</p>
-                <div className="d-flex flex-wrap">
-                  {article.tag_list.map((t, idx) => {
-                    return (
-                      <span
-                        key={`${t}-${idx}`}
-                        className="badge bg-primary me-1 hover-underline"
-                        onClick={() => {
-                          setPage(1);
-                          setAllArticles([]);
-                          setTagFilter((prev) =>
-                            Array.from(new Set([...prev, t]))
-                          );
-                        }}
-                      >
-                        {t}
-                      </span>
-                    );
-                  })}
-                </div>
-              </CardBody>
-              <CardFooter>
-                <div className="d-flex">
-                  <div className="ms-auto d-flex align-items-center gap-2">
-                    <img
-                      src={article.user.profile_image}
-                      alt="User"
-                      style={{ width: 40 }}
-                      className="rounded-circle"
-                    />
-                    <div style={{ lineHeight: 1.2 }}>
-                      <div className="fw-bold">
-                        <div
-                          className="hover-underline"
-                          onClick={() => {
-                            setPage(1);
-                            setAllArticles([]);
-                            setUsernameFilter(article.user.username);
-                          }}
-                        >
-                          {article.user.name}
-                        </div>
-                      </div>
-                      <div className="small fs-6 text-muted">
-                        {moment(article.published_at).format("DD MMM YY")}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardFooter>
-            </Card>
+            <ArticleCard
+              key={`${article.id}-${idx}`}
+              onClickUsername={(u) => {
+                setPage(1);
+                setAllArticles([]);
+                setUsernameFilter(u);
+              }}
+              article={article}
+              onClickTag={(t) => {
+                setPage(1);
+                setAllArticles([]);
+                setTagFilter((prev) => Array.from(new Set([...prev, t])));
+              }}
+            />
           ))}
+
           {loading && (
             <div className="d-flex flex-column" style={{ gap: 16 }}>
               {Array.from({ length: 10 }).map((_, idx) => (
@@ -235,6 +240,113 @@ export default function Feed() {
           </Card>
         </div>
       </div>
+
+      <Popup
+        popupClass={"p-2 border mt-1"}
+        ref={popupRef}
+        popupAlign={{
+          horizontal: "center",
+          vertical: "top",
+        }}
+        show={!!anchorArticle}
+        onClose={() => setAnchorArticle(null)}
+        anchor={popoverAnchor.current || null}
+      >
+        <div ref={popupContainerRef} style={{ width: 200 }}>
+          <Button
+            fillMode="flat"
+            className="w-100"
+            svgIcon={icons.bookIcon}
+            onClick={() => setDialogArticle(anchorArticle)}
+          >
+            Add to Library
+          </Button>
+        </div>
+      </Popup>
+      {dialogArticle && (
+        <Dialog
+          title={"Add Article to Library"}
+          onClose={() => setDialogArticle(null)}
+        >
+          <TabStrip
+            selected={tabSelected}
+            onSelect={handleTabSelect}
+            style={{ maxWidth: 700 }}
+          >
+            <TabStripTab title="Add To Section">
+              <p>
+                Baseball is a bat-and-ball game played between two teams of nine
+                players each, who take turns batting and fielding.
+              </p>
+              <p>
+                The batting team attempts to score runs by hitting a ball that
+                is thrown by the pitcher with a bat swung by the batter, then
+                running counter-clockwise around a series of four bases: first,
+                second, third, and home plate. A run is scored when a player
+                advances around the bases and returns to home plate.
+              </p>
+            </TabStripTab>
+            <TabStripTab title="Create Section">
+              <div className="d-flex flex-column custom-dialog">
+                <div>
+                  <div className="mb-1 fw-bold">Section Name</div>
+                  <TextBox
+                    type="text"
+                    className="form-control"
+                    value={sectionName}
+                    onChange={(e) => setSectionName(e.value as string)}
+                  />
+                </div>
+                <div className="mb-2">
+                  <div className="mb-1 fw-bold">Section Color</div>
+                  <ColorPalette
+                    palette={libraryColors}
+                    tileSize={30}
+                    value={sectionColor}
+                    onChange={(e) => setSectionColor(e.value)}
+                  />
+                </div>
+
+                {sectionColor && sectionColor && (
+                  <div
+                    className="p-3"
+                    style={{
+                      backgroundColor: sectionColor,
+                      color: "white",
+                      borderRadius: 4,
+                    }}
+                  >
+                    <div className="mb-1 fw-bold text-center">
+                      {sectionName}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </TabStripTab>
+          </TabStrip>
+          <DialogActionsBar>
+            <Button type="button" onClick={() => setDialogArticle(null)}>
+              No
+            </Button>
+
+            <Button
+              disabled={
+                tabSelected === 1 &&
+                (sectionName.length < 5 ||
+                  !sectionColor ||
+                  sectionName.length > 20)
+              }
+              type="button"
+              themeColor="primary"
+              onClick={() => setDialogArticle(null)}
+            >
+              {tabSelected === 1
+                ? "Create and Add to Section"
+                : "Add to Section"}
+            </Button>
+          </DialogActionsBar>
+        </Dialog>
+      )}
     </div>
   );
 }

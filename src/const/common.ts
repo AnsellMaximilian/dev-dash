@@ -22,6 +22,14 @@ export const drawerItems: DrawerItemProps[] = [
     separator: true,
   },
   {
+    text: "Library",
+    svgIcon: icons.bookIcon,
+    route: "/library",
+  },
+  {
+    separator: true,
+  },
+  {
     text: "Articles",
     svgIcon: icons.stickyNoteIcon,
     route: "/articles",
@@ -50,4 +58,16 @@ export const drawerItems: DrawerItemProps[] = [
     svgIcon: icons.gearIcon,
     route: "/settings",
   },
+];
+export const libraryColors = [
+  "#FF5733", // Bright Orange
+  "#C70039", // Crimson Red
+  "#900C3F", // Deep Magenta
+  "#FFC300", // Golden Yellow
+  "#DAF7A6", // Light Lime Green
+  "#3498DB", // Vivid Blue
+  "#1ABC9C", // Turquoise
+  "#8E44AD", // Rich Purple
+  "#16A085", // Deep Teal
+  "#D35400", // Burnt Orange
 ];

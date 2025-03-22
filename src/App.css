@@ -32,3 +32,37 @@ body {
   text-decoration: underline;
   cursor: pointer;
 }
+
+.custom-dialog {
+  width: 90%;
+  max-width: 900px;
+}
+
+/* Large screens */
+@media (min-width: 1200px) {
+  .custom-dialog {
+    width: 700px;
+  }
+}
+
+/* Medium screens (tablets) */
+@media (max-width: 1199px) {
+  .custom-dialog {
+    width: 500px;
+  }
+}
+
+/* Small screens (phones) */
+@media (max-width: 768px) {
+  .custom-dialog {
+    width: 300px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .custom-dialog {
+    width: 90%;
+    max-width: 320px;
+  }
+}

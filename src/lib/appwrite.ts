@@ -8,6 +8,9 @@ export const config = {
   apiKeyCollection: String(import.meta.env.VITE_API_KEY_COLLECTION_ID),
   devProxyFuncId: String(import.meta.env.VITE_DEV_PROXY_FUNCTION_ID),
   userDataCollectionId: String(import.meta.env.VITE_USER_DATA_COLLECTION_ID),
+  librarySectionCollectionId: String(
+    import.meta.env.VITE_LIBRARY_SECTION_COLLECTION_ID
+  ),
 };
 
 export const client = new Client();

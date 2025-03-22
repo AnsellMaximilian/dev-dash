@@ -10,3 +10,12 @@ export interface UserData extends Models.Document, UserDataBody {}
 export interface UserDataBody {
   pinnedArticles: number[];
 }
+
+export interface LibrarySectionBody {
+  name: string;
+  bgColor: string;
+  articleIds: number[];
+  userId: string;
+}
+
+export interface LibrarySection extends Models.Document, LibrarySectionBody {}

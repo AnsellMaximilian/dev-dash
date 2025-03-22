@@ -17,6 +17,7 @@ import CreateArticle from "./pages/CreateArticle";
 import BadgeProgress from "./pages/BadgeProgress";
 import PublicProfile from "./pages/PublicProfile";
 import Feed from "./pages/Feed";
+import Library from "./pages/Library";
 
 function App() {
   return (
@@ -112,6 +113,17 @@ function App() {
                     <ProtectedRoute>
                       <DashboardLayout>
                         <Feed />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="/library"
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <Library />
                       </DashboardLayout>
                     </ProtectedRoute>
                   }
