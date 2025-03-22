@@ -1,4 +1,4 @@
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMaxData, usePaginatedData } from "../hooks/dev";
 import { Article, Tag } from "../types/dev";
 import {
@@ -13,6 +13,7 @@ import {
 import moment from "moment";
 import { Skeleton } from "@progress/kendo-react-indicators";
 import { Button } from "@progress/kendo-react-buttons";
+import { AutoComplete } from "@progress/kendo-react-dropdowns";
 
 export default function Feed() {
   const [page, setPage] = useState(1);
@@ -20,6 +21,7 @@ export default function Feed() {
   const [usernameFilter, setUsernameFilter] = useState("");
   const [allArticles, setAllArticles] = useState<Article[]>([]);
   const bottomRef = useRef<HTMLDivElement | null>(null);
+  const [tagSearchValue, setTagSearchValue] = useState("");
 
   const { fetchData, data, loading } = usePaginatedData<Article>(
     null,
@@ -156,7 +158,32 @@ export default function Feed() {
             </CardHeader>
             <CardBody>
               <div className="mb-4">
-                <div>
+                <div className="d-flex flex-column" style={{ gap: 16 }}>
+                  <div className="d-flex" style={{ gap: 16 }}>
+                    <AutoComplete
+                      value={tagSearchValue}
+                      onChange={(e) => setTagSearchValue(e.value)}
+                      style={{ width: "300px" }}
+                      data={tags
+                        .map((t) => t.name)
+                        .filter((t) => !tagFilter.includes(t))}
+                    />
+                    <Button
+                      size="small"
+                      themeColor="secondary"
+                      onClick={() => {
+                        setPage(1);
+                        setAllArticles([]);
+                        setTagFilter((prev) =>
+                          Array.from(new Set([...prev, tagSearchValue]))
+                        );
+                        setTagSearchValue("");
+                      }}
+                    >
+                      Add Tag Filter
+                    </Button>
+                  </div>
+
                   {usernameFilter && (
                     <div>
                       By:{" "}
@@ -170,7 +197,7 @@ export default function Feed() {
                   )}
                   {tagFilter.length > 0 && (
                     <div>
-                      <div>Tags</div>
+                      <div className="mb-1 fw-bold">Tags</div>
                       <div className="d-flex flex-wrap">
                         {tagFilter.map((t, idx) => (
                           <span
