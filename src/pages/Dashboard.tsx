@@ -1,37 +1,51 @@
 import { Button } from "@progress/kendo-react-buttons";
 import notFoundImg from "../assets/not-found.svg";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import APIKeyDialog from "../components/dashboard/APIKeyDialog";
 import { useDev, useDevData } from "../hooks/dev";
 import { SvgIcon } from "@progress/kendo-react-common";
 import * as svgIcons from "@progress/kendo-svg-icons";
+import { useDebounce } from "use-debounce";
+
 import { FaGithub } from "react-icons/fa";
 import {
   TileLayout,
   TileLayoutItem,
   TileLayoutRepositionEvent,
+  TileStrictPosition,
 } from "@progress/kendo-react-layout";
 import Tile from "../components/dashboard/Tile";
 import DevBirthdayCountdown from "../components/DevBirthdayCountdown";
+import { useAuth } from "../hooks/auth";
+import { updateUserData } from "../service/userData";
+import { defaultTileData } from "../const/common";
+import { useNotification } from "../hooks/useNotification";
 
 export default function Dashboard() {
+  const { user, userData } = useAuth();
   const [apiKeyDialogOpen, setApiKeyDialogOpen] = useState(false);
-  const [tileData, setTileData] = useState([
-    { col: 1, colSpan: 4, rowSpan: 1 },
-    { col: 1, colSpan: 2, rowSpan: 1 },
-    { col: 1, colSpan: 2, rowSpan: 2 },
-    { col: 4, colSpan: 1, rowSpan: 1 },
-    { col: 3, colSpan: 1, rowSpan: 1 },
-    { col: 3, colSpan: 1, rowSpan: 1 },
-    { col: 4, colSpan: 1, rowSpan: 2 },
-    { col: 3, colSpan: 2, rowSpan: 1 },
-  ]);
+  const [tileData, setTileData] =
+    useState<TileStrictPosition[]>(defaultTileData);
+
+  const [tileDataToSave, setTileDataToSave] = useState<TileStrictPosition[]>(
+    []
+  );
   const { apiKey } = useDev();
-  const { devUser } = useDevData();
+  const { devUser, articles } = useDevData();
+  const notify = useNotification();
+
+  const [debouncedTileData] = useDebounce(tileDataToSave, 5000);
 
   const handleReposition = (e: TileLayoutRepositionEvent) => {
     setTileData(e.value);
+    setTileDataToSave(e.value);
   };
+
+  const pinnedArticles = useMemo(
+    () =>
+      articles.data.filter((a) => userData.data?.pinnedArticles.includes(a.id)),
+    [articles.data, userData.data]
+  );
 
   const tiles: TileLayoutItem[] = useMemo(
     () => [
@@ -104,56 +118,72 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </div>
-                <DevBirthdayCountdown dateJoined={devUser.data.joined_at} />
               </div>
             )}
           </Tile>
         ),
       },
       {
-        header: "Test 2",
-        body: <div>Swagger</div>,
+        header: "Birthday",
+        body: (
+          <div className="d-flex justify-content-center">
+            {devUser.data && (
+              <DevBirthdayCountdown dateJoined={devUser.data.joined_at} />
+            )}
+          </div>
+        ),
       },
       {
-        header: "Test 3",
-        body: <div>Swagger</div>,
-      },
-      {
-        header: "Test 4",
-        body: <div>Swagger</div>,
-      },
-      {
-        header: "Test 5",
-        body: <div>Swagger</div>,
-      },
-      {
-        header: "Test 6",
-        body: <div>Swagger</div>,
-      },
-      {
-        header: "Test 7",
-        body: <div>Swagger</div>,
-      },
-      {
-        header: "Test 8",
-        body: <div>Swagger</div>,
+        header: `Pinned Articles (${pinnedArticles.length})`,
+        body: <div>{}</div>,
       },
     ],
-    [devUser]
+    [devUser, pinnedArticles]
   );
+
+  useEffect(() => {
+    (async () => {
+      if (user && debouncedTileData.length > 0) {
+        notify("info", "Updating your dashboard layout...");
+
+        await updateUserData(user.$id, {
+          profileArrangement: debouncedTileData.map((td) => JSON.stringify(td)),
+        });
+        notify("success", "Dashboard layout updated successfully!");
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedTileData, user]);
+
+  useEffect(() => {
+    try {
+      console.log("SETTING");
+      if (userData.data && userData.data.profileArrangement.length > 0) {
+        setTileData(
+          userData.data.profileArrangement.map((pa) => JSON.parse(pa))
+        );
+      } else throw new Error("Error parsing.");
+    } catch {
+      setTileData(defaultTileData);
+    }
+  }, [userData]);
+
+  console.log({ tileData, tiles });
 
   return (
     <div>
       {apiKey ? (
         <div className="">
-          <TileLayout
-            columns={4}
-            rowHeight={255}
-            positions={tileData}
-            gap={{ rows: 10, columns: 10 }}
-            items={tiles}
-            onReposition={handleReposition}
-          />
+          {tileData.length === tiles.length && (
+            <TileLayout
+              columns={4}
+              rowHeight={255}
+              positions={tileData}
+              gap={{ rows: 10, columns: 10 }}
+              items={tiles}
+              onReposition={handleReposition}
+            />
+          )}
         </div>
       ) : (
         <div className="d-flex flex-column align-items-center py-5 px-4">

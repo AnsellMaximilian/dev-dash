@@ -1,5 +1,5 @@
 import { Grid, GridColumn } from "@progress/kendo-react-grid";
-import { useDev, useMaxData } from "../hooks/dev";
+import { useDevData } from "../hooks/dev";
 import { PageChangeEvent, Pager } from "@progress/kendo-react-data-tools";
 import { useEffect, useMemo, useState } from "react";
 import { Article } from "../types/dev";
@@ -14,13 +14,9 @@ import { useNotification } from "../hooks/useNotification";
 import { useNavigate } from "react-router-dom";
 
 export default function Articles() {
-  const { apiKey } = useDev();
   const { userData, user } = useAuth();
+  const { articles } = useDevData();
 
-  const { data, fetchData, loading } = useMaxData<Article>(
-    apiKey,
-    "/articles/me/all"
-  );
   const [skip, setSkip] = useState(0);
   const [take, setTake] = useState(5);
 
@@ -34,8 +30,8 @@ export default function Articles() {
   };
 
   const pagedArticles = useMemo(
-    () => data.slice(skip, skip + take),
-    [skip, take, data]
+    () => articles.data.slice(skip, skip + take),
+    [skip, take, articles.data]
   );
 
   const handleToggleArticlePin = async (id: number, pin: boolean) => {
@@ -61,17 +57,17 @@ export default function Articles() {
       notify("error", msg);
     }
   };
-
+  const fetchArticles = articles.fetchData;
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    fetchArticles(1);
+  }, [fetchArticles]);
 
   return (
     <div>
       <h1 className="h3">Articles</h1>
       <div>
         <Grid
-          showLoader={loading}
+          showLoader={articles.loading}
           data={pagedArticles}
           style={{ height: "400px" }}
           resizable
@@ -158,12 +154,13 @@ export default function Articles() {
           pageSizes={[1, 5, 10]}
           type="input"
           previousNext={true}
-          total={data.length}
+          total={articles.data.length}
           onPageChange={handlePageChange}
         />
       </div>
 
       <FloatingActionButton
+        style={{ display: "none" }}
         svgIcon={icons.plusIcon}
         onClick={() => {
           navigate("/articles/new");

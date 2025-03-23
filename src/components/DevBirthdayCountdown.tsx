@@ -6,7 +6,7 @@ const CountdownCard = ({ value, label }: { value: number; label: string }) => {
   return (
     <div className="d-flex flex-column justify-content-center align-items-center">
       <div
-        className="border border-2 border-primary w-100 fs-5 flex-grow-1 d-flex justify-content-center align-items-center fw-bold"
+        className="rounded-1 border border-2 shadow-sm w-100 fs-5 flex-grow-1 d-flex justify-content-center align-items-center fw-bold"
         style={{ height: 75 }}
       >
         {value}
@@ -58,9 +58,9 @@ export default function DevBirthdayCountdown({
     : devBirthdayThisYear;
   return (
     <div className="d-flex align-items-start flex-column">
-      <div className="d-flex align-items-center mb-2">
+      <div className="d-flex align-items-center mb-2 mx-auto">
         <LiaBirthdayCakeSolid size={44} />
-        <div className="ms-1">
+        <div className="ms-1 text-center">
           <div className="fw-bold">Dev Birthday</div>
           <div
             style={{
@@ -70,6 +70,7 @@ export default function DevBirthdayCountdown({
             {devBirthdayThisYear.format("DD MMMM")}
           </div>
         </div>
+        <LiaBirthdayCakeSolid size={44} />
       </div>
       <Countdown date={nextDevBirthday.toDate()} renderer={renderer} />
     </div>

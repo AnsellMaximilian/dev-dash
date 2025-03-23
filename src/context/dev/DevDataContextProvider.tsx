@@ -1,7 +1,12 @@
 import { ReactNode, useEffect } from "react";
 import { DevDataContext } from "./DevDataContext";
-import { useDev, usePaginatedData, useSingleData } from "../../hooks/dev";
-import { Article, DevUser } from "../../types/dev";
+import {
+  useDev,
+  useMaxData,
+  usePaginatedData,
+  useSingleData,
+} from "../../hooks/dev";
+import { Article, DevUser, ReadingListItem } from "../../types/dev";
 
 export const DevDataContextProvider = ({
   children,
@@ -10,7 +15,8 @@ export const DevDataContextProvider = ({
 }) => {
   const { apiKey } = useDev();
   const devUserData = useSingleData<DevUser>(apiKey, "/users/me");
-  const articles = usePaginatedData<Article>(apiKey, "/articles/me", 10);
+  const articles = usePaginatedData<Article>(apiKey, "/articles/me/all", 1000);
+  const readingList = useMaxData<ReadingListItem>(apiKey, "/readinglist");
 
   const fetchArticles = articles.fetchData;
 
@@ -21,7 +27,9 @@ export const DevDataContextProvider = ({
   }, [devUserData.data, fetchArticles]);
 
   return (
-    <DevDataContext.Provider value={{ devUser: devUserData, articles }}>
+    <DevDataContext.Provider
+      value={{ devUser: devUserData, articles, readingList }}
+    >
       {children}
     </DevDataContext.Provider>
   );

@@ -1,10 +1,11 @@
 import { createContext } from "react";
-import { PaginatedData, SingularData } from "../../types/common";
-import { Article, DevUser } from "../../types/dev";
+import { MaxData, PaginatedData, SingularData } from "../../types/common";
+import { Article, DevUser, ReadingListItem } from "../../types/dev";
 
 interface DevDataContext {
   devUser: SingularData<DevUser>;
   articles: PaginatedData<Article>;
+  readingList: MaxData<ReadingListItem>;
 }
 
 export const DevDataContext = createContext<DevDataContext | undefined>(

@@ -9,6 +9,7 @@ export interface UserData extends Models.Document, UserDataBody {}
 
 export interface UserDataBody {
   pinnedArticles: number[];
+  profileArrangement: string[];
 }
 
 export interface LibrarySectionBody {

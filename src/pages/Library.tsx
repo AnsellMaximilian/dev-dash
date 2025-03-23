@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useDev, useMaxData } from "../hooks/dev";
+import { useDevData, useMaxData } from "../hooks/dev";
 import { Article, ReadingListItem } from "../types/dev";
 import { Skeleton } from "@progress/kendo-react-indicators";
 import ArticleCard from "../components/ArticleCard";
@@ -23,7 +23,6 @@ import { getCatchErrorMessage } from "../lib/utils/error";
 import { Dialog, DialogActionsBar } from "@progress/kendo-react-dialogs";
 
 export default function Library() {
-  const { apiKey } = useDev();
   const { user } = useAuth();
   const notify = useNotification();
   const [showScrollTopButton, setShowScrollTopButton] = useState(false);
@@ -40,10 +39,9 @@ export default function Library() {
   const [selectedSectionToAdd, setSelectedSectionToAdd] =
     useState<LibrarySection | null>(null);
 
-  const { data, loading, fetchData } = useMaxData<ReadingListItem>(
-    apiKey,
-    "/readinglist"
-  );
+  const {
+    readingList: { data, loading, fetchData },
+  } = useDevData();
 
   const fetchLibrarySections = useCallback(async () => {
     if (!user) return [];
