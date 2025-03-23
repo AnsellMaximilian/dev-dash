@@ -106,6 +106,16 @@ export default function DashboardLayout({
                           You don't seeem to have a valid API key. Go to
                           settings and submit one.
                         </p>
+                        <p className="text-center">
+                          Log in to <em>Dev.to</em> and go to{" "}
+                          <a
+                            href="https://dev.to/settings/extensions"
+                            target="_blank"
+                          >
+                            https://dev.to/settings/extensions
+                          </a>{" "}
+                          and generate an API key under "DEV Community API Keys"
+                        </p>
                         <Button
                           onClick={() => {
                             navigate("/settings");
@@ -131,6 +141,16 @@ export default function DashboardLayout({
                       <p className="text-center">
                         You can start tracking your account once you've
                         submitted an API key from your DEV account.
+                      </p>
+                      <p className="text-center">
+                        Log in to <em>Dev.to</em> and go to{" "}
+                        <a
+                          href="https://dev.to/settings/extensions"
+                          target="_blank"
+                        >
+                          https://dev.to/settings/extensions
+                        </a>{" "}
+                        and generate an API key under "DEV Community API Keys"
                       </p>
                       <Button
                         type="button"

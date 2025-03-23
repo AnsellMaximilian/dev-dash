@@ -38,6 +38,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logoutUser = async () => {
     await logout();
+    localStorage.removeItem("apiKey");
     setUser(null);
   };
 

@@ -40,6 +40,8 @@ export const DevProvider = ({ children }: { children: ReactNode }) => {
 
         setLoading(false);
       })();
+    } else {
+      setApiKey(null);
     }
   }, [user]);
 

@@ -212,9 +212,12 @@ export default function Dashboard() {
       if (user && debouncedTileData.length > 0) {
         notify("info", "Updating your dashboard layout...");
 
-        await updateUserData(user.$id, {
+        const res = await updateUserData(user.$id, {
           profileArrangement: debouncedTileData.map((td) => JSON.stringify(td)),
         });
+        userData.setData((prev) =>
+          prev ? { ...prev, profileArrangement: res.profileArrangement } : null
+        );
         notify("success", "Dashboard layout updated successfully!");
       }
     })();
