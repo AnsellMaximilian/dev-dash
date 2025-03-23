@@ -13,9 +13,12 @@ import { drawerItems } from "../const/common";
 import * as svgIcons from "@progress/kendo-svg-icons";
 import logo from "../assets/logo.svg";
 import UserAvatar from "./UserAvatar";
+import { useDevData } from "../hooks/dev";
+import { Loader } from "@progress/kendo-react-indicators";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
+  const { devUser } = useDevData();
   const [drawerExpanded, setDrawerExpanded] = useState(true);
 
   const [selected, setSelected] = useState(
@@ -79,7 +82,27 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                   id={item.text}
                   key={item.text}
                 >
-                  {children}
+                  {devUser.loading ? (
+                    <div className="py-5 d-flex justify-content-center align-items-center">
+                      <Loader size="large" />
+                    </div>
+                  ) : devUser.error ? (
+                    <div className="py-5 d-flex justify-content-center align-items-center text-center flex-column">
+                      <p>
+                        You don't seeem to have a valid API key. Go to settings
+                        and submit one.
+                      </p>
+                      <Button
+                        onClick={() => {
+                          navigate("/settings");
+                        }}
+                      >
+                        Go to Settings
+                      </Button>
+                    </div>
+                  ) : (
+                    children
+                  )}
                 </div>
               )
             );
