@@ -74,7 +74,8 @@ export default function Register() {
             </div>
             <Button
               type={"submit"}
-              className="btn-primary w-100"
+              className="w-100"
+              themeColor="primary"
               disabled={isLoading}
             >
               {isLoading ? "Registering..." : "Create Free Account"}

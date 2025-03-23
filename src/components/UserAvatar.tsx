@@ -67,15 +67,18 @@ export default function UserAvatar() {
           vertical: "bottom",
         }}
       >
-        <div className="h6">{user.name}</div>
+        <div className="p-2 d-flex flex-column">
+          <div className="fw-bold pb-2 border-bottom">Profile</div>
+          <div className="h6 my-2">{user.name}</div>
 
-        <Button
-          type="button"
-          className="btn btn-outline-primary"
-          onClick={() => logoutUser()}
-        >
-          Logout
-        </Button>
+          <Button
+            type="button"
+            className="btn btn-outline-primary d-block"
+            onClick={() => logoutUser()}
+          >
+            Logout
+          </Button>
+        </div>
       </Popup>
     </div>
   );

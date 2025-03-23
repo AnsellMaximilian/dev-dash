@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { useDev, useDevData } from "../hooks/dev";
 import { Button } from "@progress/kendo-react-buttons";
 import { Tooltip } from "@progress/kendo-react-tooltip";
+import { Loader } from "@progress/kendo-react-indicators";
 
 export default function Settings() {
   const [tabSelected, setTabSelected] = useState(0);
@@ -61,20 +62,26 @@ export default function Settings() {
               <Tooltip anchorElement="target" position="top" parentTitle>
                 <div
                   title={
-                    devUser.error
+                    devUser.loading
+                      ? "Loading..."
+                      : devUser.error
                       ? "This API key is invalid"
                       : "This API key is valid"
                   }
                 >
-                  <SvgIcon
-                    icon={
-                      devUser.error
-                        ? svgIcons.xCircleIcon
-                        : svgIcons.checkCircleIcon
-                    }
-                    size="xlarge"
-                    color={devUser.error ? "red" : "green"}
-                  />
+                  {devUser.loading ? (
+                    <Loader />
+                  ) : (
+                    <SvgIcon
+                      icon={
+                        devUser.error
+                          ? svgIcons.xCircleIcon
+                          : svgIcons.checkCircleIcon
+                      }
+                      size="xlarge"
+                      color={devUser.error ? "red" : "green"}
+                    />
+                  )}
                 </div>
               </Tooltip>
             </div>

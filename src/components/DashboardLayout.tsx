@@ -1,4 +1,6 @@
 import { ReactNode, useState } from "react";
+import notFoundImg from "../assets/not-found.svg";
+
 import {
   AppBar,
   AppBarSection,
@@ -13,13 +15,22 @@ import { drawerItems } from "../const/common";
 import * as svgIcons from "@progress/kendo-svg-icons";
 import logo from "../assets/logo.svg";
 import UserAvatar from "./UserAvatar";
-import { useDevData } from "../hooks/dev";
+import { useDev, useDevData } from "../hooks/dev";
 import { Loader } from "@progress/kendo-react-indicators";
+import APIKeyDialog from "./dashboard/APIKeyDialog";
 
-export default function DashboardLayout({ children }: { children: ReactNode }) {
+export default function DashboardLayout({
+  children,
+  allowInvalidApiKey,
+}: {
+  children: ReactNode;
+  allowInvalidApiKey?: boolean;
+}) {
   const navigate = useNavigate();
   const { devUser } = useDevData();
+  const { apiKey } = useDev();
   const [drawerExpanded, setDrawerExpanded] = useState(true);
+  const [apiKeyDialogOpen, setApiKeyDialogOpen] = useState(false);
 
   const [selected, setSelected] = useState(
     drawerItems.findIndex((item) => item.selected === true)
@@ -82,26 +93,56 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                   id={item.text}
                   key={item.text}
                 >
-                  {devUser.loading ? (
-                    <div className="py-5 d-flex justify-content-center align-items-center">
-                      <Loader size="large" />
-                    </div>
-                  ) : devUser.error ? (
-                    <div className="py-5 d-flex justify-content-center align-items-center text-center flex-column">
-                      <p>
-                        You don't seeem to have a valid API key. Go to settings
-                        and submit one.
+                  {allowInvalidApiKey ? (
+                    children
+                  ) : apiKey ? (
+                    devUser.loading ? (
+                      <div className="py-5 d-flex justify-content-center align-items-center">
+                        <Loader size="large" />
+                      </div>
+                    ) : devUser.error ? (
+                      <div className="py-5 d-flex justify-content-center align-items-center text-center flex-column">
+                        <p>
+                          You don't seeem to have a valid API key. Go to
+                          settings and submit one.
+                        </p>
+                        <Button
+                          onClick={() => {
+                            navigate("/settings");
+                          }}
+                        >
+                          Go to Settings
+                        </Button>
+                      </div>
+                    ) : (
+                      children
+                    )
+                  ) : (
+                    <div className="d-flex flex-column align-items-center py-5 px-4">
+                      <img
+                        src={notFoundImg}
+                        className="mw-100 d-block mx-auto"
+                        alt="Not found image"
+                        style={{ width: 400 }}
+                      />
+                      <p className="text-center h4 mt-3">
+                        You haven't submitted your API key yet.
+                      </p>
+                      <p className="text-center">
+                        You can start tracking your account once you've
+                        submitted an API key from your DEV account.
                       </p>
                       <Button
+                        type="button"
+                        className="my-1"
+                        themeColor="primary"
                         onClick={() => {
-                          navigate("/settings");
+                          setApiKeyDialogOpen(true);
                         }}
                       >
-                        Go to Settings
+                        Submit One
                       </Button>
                     </div>
-                  ) : (
-                    children
                   )}
                 </div>
               )
@@ -109,6 +150,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           })}
         </DrawerContent>
       </Drawer>
+      <APIKeyDialog setOpen={setApiKeyDialogOpen} open={apiKeyDialogOpen} />
     </>
   );
 }

@@ -1,8 +1,5 @@
-import { Button } from "@progress/kendo-react-buttons";
-import notFoundImg from "../assets/not-found.svg";
 import { useEffect, useMemo, useState } from "react";
-import APIKeyDialog from "../components/dashboard/APIKeyDialog";
-import { useDev, useDevData } from "../hooks/dev";
+import { useDevData } from "../hooks/dev";
 import { SvgIcon } from "@progress/kendo-react-common";
 import * as svgIcons from "@progress/kendo-svg-icons";
 import { useDebounce } from "use-debounce";
@@ -20,17 +17,18 @@ import { useAuth } from "../hooks/auth";
 import { updateUserData } from "../service/userData";
 import { defaultTileData } from "../const/common";
 import { useNotification } from "../hooks/useNotification";
+import { Button } from "@progress/kendo-react-buttons";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const { user, userData } = useAuth();
-  const [apiKeyDialogOpen, setApiKeyDialogOpen] = useState(false);
+  const navigate = useNavigate();
   const [tileData, setTileData] =
     useState<TileStrictPosition[]>(defaultTileData);
 
   const [tileDataToSave, setTileDataToSave] = useState<TileStrictPosition[]>(
     []
   );
-  const { apiKey } = useDev();
   const { devUser, articles } = useDevData();
   const notify = useNotification();
 
@@ -134,51 +132,79 @@ export default function Dashboard() {
         ),
       },
       {
-        header: `Pinned Articles (${pinnedArticles.length})`,
+        header: `Pinned Posts (${pinnedArticles.length})`,
         body: (
-          <div className="d-flex flex-column " style={{ gap: 16 }}>
-            {pinnedArticles.slice(0, 5).map((a) => {
-              return (
-                <div
-                  key={`${a.id}-${a.title}`}
-                  className="p-3 border rounded-1 shadow-sm"
-                >
-                  <a className="fw-bold d-block mb-2 black-link" href={a.url}>
-                    {a.title}
-                  </a>
-                  <div className="d-flex" style={{ gap: 16 }}>
+          <div>
+            {pinnedArticles.length > 0 ? (
+              <div className="d-flex flex-column " style={{ gap: 16 }}>
+                {pinnedArticles.slice(0, 5).map((a) => {
+                  return (
                     <div
-                      className="d-flex align-items-center"
-                      style={{ gap: 4 }}
+                      key={`${a.id}-${a.title}`}
+                      className="p-3 border rounded-1 shadow-sm"
                     >
-                      <SvgIcon icon={svgIcons.eyeIcon} />
-                      <div className="fw-bold small">{a.page_views_count}</div>
-                    </div>
-                    <div
-                      className="d-flex align-items-center"
-                      style={{ gap: 4 }}
-                    >
-                      <SvgIcon icon={svgIcons.commentIcon} />
-                      <div className="fw-bold small">{a.comments_count}</div>
-                    </div>
-                    <div
-                      className="d-flex align-items-center"
-                      style={{ gap: 4 }}
-                    >
-                      <SvgIcon icon={svgIcons.thumbUpIcon} />
-                      <div className="fw-bold small">
-                        {a.public_reactions_count}
+                      <a
+                        className="fw-bold d-block mb-2 black-link"
+                        href={a.url}
+                      >
+                        {a.title}
+                      </a>
+                      <div className="d-flex" style={{ gap: 16 }}>
+                        <div
+                          className="d-flex align-items-center"
+                          style={{ gap: 4 }}
+                        >
+                          <SvgIcon icon={svgIcons.eyeIcon} />
+                          <div className="fw-bold small">
+                            {a.page_views_count}
+                          </div>
+                        </div>
+                        <div
+                          className="d-flex align-items-center"
+                          style={{ gap: 4 }}
+                        >
+                          <SvgIcon icon={svgIcons.commentIcon} />
+                          <div className="fw-bold small">
+                            {a.comments_count}
+                          </div>
+                        </div>
+                        <div
+                          className="d-flex align-items-center"
+                          style={{ gap: 4 }}
+                        >
+                          <SvgIcon icon={svgIcons.thumbUpIcon} />
+                          <div className="fw-bold small">
+                            {a.public_reactions_count}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div
+                className="d-flex flex-column justify-content-center align-items-center py-5"
+                style={{ gap: 16 }}
+              >
+                <div>
+                  You don't have any pinned posts to display. Go to the Posts
+                  page and select a few.
                 </div>
-              );
-            })}
+                <Button
+                  onClick={() => {
+                    navigate("/articles");
+                  }}
+                >
+                  Posts Page
+                </Button>
+              </div>
+            )}
           </div>
         ),
       },
     ],
-    [devUser, pinnedArticles]
+    [devUser, pinnedArticles, navigate]
   );
 
   useEffect(() => {
@@ -209,46 +235,18 @@ export default function Dashboard() {
 
   return (
     <div>
-      {apiKey ? (
-        <div className="">
-          {tileData.length === tiles.length && (
-            <TileLayout
-              columns={4}
-              rowHeight={255}
-              positions={tileData}
-              gap={{ rows: 10, columns: 10 }}
-              items={tiles}
-              onReposition={handleReposition}
-            />
-          )}
-        </div>
-      ) : (
-        <div className="d-flex flex-column align-items-center py-5 px-4">
-          <img
-            src={notFoundImg}
-            className="mw-100 d-block mx-auto"
-            alt="Not found image"
-            style={{ width: 400 }}
+      <div className="">
+        {tileData.length === tiles.length && (
+          <TileLayout
+            columns={4}
+            rowHeight={255}
+            positions={tileData}
+            gap={{ rows: 10, columns: 10 }}
+            items={tiles}
+            onReposition={handleReposition}
           />
-          <p className="text-center h4 mt-3">
-            You haven't submitted your API key yet.
-          </p>
-          <p className="text-center">
-            You can start tracking your account once you've submitted an API key
-            from your DEV account.
-          </p>
-          <Button
-            type="button"
-            className="btn-primary my-1"
-            onClick={() => {
-              setApiKeyDialogOpen(true);
-            }}
-          >
-            Submit One
-          </Button>
-        </div>
-      )}
-      <APIKeyDialog setOpen={setApiKeyDialogOpen} open={apiKeyDialogOpen} />
+        )}
+      </div>
     </div>
   );
 }

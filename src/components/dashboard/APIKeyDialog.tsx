@@ -71,7 +71,7 @@ export default function APIKeyDialog({ open, setOpen }: Props) {
             </Button>
             <Button
               type="submit"
-              className="btn-primary"
+              themeColor="primary"
               onClick={handleSumbit}
               disabled={!apiKey}
             >

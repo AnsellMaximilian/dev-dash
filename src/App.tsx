@@ -58,7 +58,7 @@ function App() {
                   path="/settings"
                   element={
                     <ProtectedRoute>
-                      <DashboardLayout>
+                      <DashboardLayout allowInvalidApiKey>
                         <Settings />
                       </DashboardLayout>
                     </ProtectedRoute>
