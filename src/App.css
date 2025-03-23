@@ -66,3 +66,12 @@ body {
     max-width: 320px;
   }
 }
+
+.black-link {
+  text-decoration: none;
+  color: black;
+}
+
+.black-link:hover {
+  text-decoration: underline;
+}

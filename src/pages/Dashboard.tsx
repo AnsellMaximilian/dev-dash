@@ -135,7 +135,47 @@ export default function Dashboard() {
       },
       {
         header: `Pinned Articles (${pinnedArticles.length})`,
-        body: <div>{}</div>,
+        body: (
+          <div className="d-flex flex-column " style={{ gap: 16 }}>
+            {pinnedArticles.slice(0, 5).map((a) => {
+              return (
+                <div
+                  key={`${a.id}-${a.title}`}
+                  className="p-3 border rounded-1 shadow-sm"
+                >
+                  <a className="fw-bold d-block mb-2 black-link" href={a.url}>
+                    {a.title}
+                  </a>
+                  <div className="d-flex" style={{ gap: 16 }}>
+                    <div
+                      className="d-flex align-items-center"
+                      style={{ gap: 4 }}
+                    >
+                      <SvgIcon icon={svgIcons.eyeIcon} />
+                      <div className="fw-bold small">{a.page_views_count}</div>
+                    </div>
+                    <div
+                      className="d-flex align-items-center"
+                      style={{ gap: 4 }}
+                    >
+                      <SvgIcon icon={svgIcons.commentIcon} />
+                      <div className="fw-bold small">{a.comments_count}</div>
+                    </div>
+                    <div
+                      className="d-flex align-items-center"
+                      style={{ gap: 4 }}
+                    >
+                      <SvgIcon icon={svgIcons.thumbUpIcon} />
+                      <div className="fw-bold small">
+                        {a.public_reactions_count}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ),
       },
     ],
     [devUser, pinnedArticles]
@@ -157,7 +197,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     try {
-      console.log("SETTING");
       if (userData.data && userData.data.profileArrangement.length > 0) {
         setTileData(
           userData.data.profileArrangement.map((pa) => JSON.parse(pa))
@@ -167,8 +206,6 @@ export default function Dashboard() {
       setTileData(defaultTileData);
     }
   }, [userData]);
-
-  console.log({ tileData, tiles });
 
   return (
     <div>
