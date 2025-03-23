@@ -210,11 +210,28 @@ export const useMaxData = <T>(
     }
   }, [apiKey, url, publicApi]);
 
+  const customFetchLogic = useCallback(async () => {
+    if (customFetchData) {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await customFetchData();
+        setData(data);
+      } catch (error) {
+        const msg = getCatchErrorMessage(error, "Error fetching data");
+        setError(msg);
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  }, [customFetchData]);
+
   return {
     data,
     error,
     loading,
-    fetchData,
+    fetchData: customFetchData ? customFetchLogic : fetchData,
     setData,
     customFetchData,
   };

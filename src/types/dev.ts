@@ -75,3 +75,11 @@ export interface Tag {
   bgColorHex: string;
   textColorHex: string;
 }
+
+export interface ReadingListItem {
+  type_of: string;
+  id: number;
+  status: string;
+  created_at: string;
+  article: Article;
+}

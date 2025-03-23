@@ -8,17 +8,26 @@ import {
 } from "@progress/kendo-react-layout";
 import { Article } from "../types/dev";
 import moment from "moment";
+import { Button } from "@progress/kendo-react-buttons";
+import { FaBookmark, FaRegBookmark } from "react-icons/fa";
+import { LibrarySection } from "../types/appwrite";
 
 interface Props {
   article: Article;
   onClickTag: (tag: string) => void;
   onClickUsername: (username: string) => void;
+  libraryMode?: boolean;
+  onClickBookmark?: () => void;
+  librarySection?: LibrarySection;
 }
 
 export default function ArticleCard({
   article,
   onClickTag,
   onClickUsername,
+  libraryMode = false,
+  onClickBookmark,
+  librarySection,
 }: Props) {
   return (
     <Card>
@@ -27,16 +36,34 @@ export default function ArticleCard({
         className="d-flex w-100 align-items-center"
         style={{ gap: 16 }}
       >
-        <CardTitle>
+        <CardTitle
+          className="d-flex align-items-center w-100"
+          style={{ gap: 8 }}
+        >
           <a href={article.url} target="_blank">
             {article.title}
           </a>
+
+          {libraryMode && (
+            <Button
+              togglable
+              className="ms-auto"
+              fillMode="clear"
+              onClick={onClickBookmark}
+            >
+              {librarySection ? (
+                <FaBookmark color={librarySection.bgColor} />
+              ) : (
+                <FaRegBookmark />
+              )}
+            </Button>
+          )}
         </CardTitle>
       </CardHeader>
       <CardBody>
         <p>{article.description}</p>
         <div className="d-flex flex-wrap">
-          {article.tag_list.map((t, idx) => {
+          {article.tag_list?.map((t, idx) => {
             return (
               <span
                 key={`${t}-${idx}`}
